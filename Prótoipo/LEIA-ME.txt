@@ -1,0 +1,17 @@
+ENTRE NESSA ONDA — PROTÓTIPO ACADÊMICO
+
+Abra o arquivo index.html em um navegador moderno.
+
+Fluxo interativo:
+1. Informe um e-mail fictício e qualquer senha de demonstração; clique em "Entrar e ver minhas escalas".
+2. Consulte o evento fictício no calendário e escolha "Confirmar participação" ou "Não poderei participar".
+3. Veja a mensagem de resultado e volte ao calendário.
+
+Este é um protótipo visual desenvolvido em HTML, CSS e JavaScript para validação de interface.
+Não contém backend, autenticação real, persistência em PostgreSQL ou registros de pessoas reais.
+O MVP planejado utilizará Angular, Node.js/Express e PostgreSQL.
+
+Capturas correspondentes:
+Tela_1_Entrada_Entre_Nessa_Onda.png
+Tela_2_Calendario_Escalas_Entre_Nessa_Onda.png
+Tela_3_Resultado_Entre_Nessa_Onda.png

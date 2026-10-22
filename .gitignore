@@ -1,0 +1,23 @@
+# Windows
+desktop.ini
+Thumbs.db
+
+# Dependencias
+node_modules/
+
+# Arquivos de ambiente e segredos
+.env
+.env.*
+!.env.example
+
+# Arquivos de compilacao
+dist/
+.angular/
+coverage/
+
+# Logs
+*.log
+
+# Editor
+.vscode/
+.idea/
