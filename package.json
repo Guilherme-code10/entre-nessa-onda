@@ -1,0 +1,32 @@
+{
+  "name": "entre-nessa-onda",
+  "version": "1.0.0",
+  "description": "Sistema web para organização de voluntários e ações sociais do projeto Entre Nessa Onda.",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "test": "vitest run",
+    "test:coverage": "vitest run --coverage",
+    "build": "vite build ./Prótoipo --outDir ../dist"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Guilherme-code10/entre-nessa-onda.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "bugs": {
+    "url": "https://github.com/Guilherme-code10/entre-nessa-onda/issues"
+  },
+  "homepage": "https://github.com/Guilherme-code10/entre-nessa-onda#readme",
+  "devDependencies": {
+    "@vitest/coverage-v8": "^5.0.5",
+    "jsdom": "^30.1.3",
+    "vite": "^8.3.5",
+    "vitest": "^5.0.5"
+  }
+}
