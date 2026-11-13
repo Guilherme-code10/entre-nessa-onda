@@ -14,6 +14,7 @@ async function iniciarPrototipo() {
 
   vi.stubGlobal('scrollTo', vi.fn());
   history.replaceState(null, '', '/');
+  window.localStorage.clear();
 
   await import('../Prótoipo/app.js');
 }
@@ -106,6 +107,72 @@ describe('Integracao - Entre Nessa Onda', () => {
 
     expect(el('calendar-view').hidden).toBe(false);
     expect(el('calendar-view').querySelectorAll('.day').length).toBe(30);
+  });
+
+  it('permite cadastrar um evento pelo painel administrativo e localiza no calendario', () => {
+    el('go-admin').click();
+
+    el('event-name').value = 'Oficina de Leitura';
+    el('event-date').value = '2026-12-05';
+    el('event-start').value = '10:00';
+    el('event-end').value = '12:00';
+    el('event-place').value = 'Centro Comunitário Exemplo';
+    el('event-sector').value = 'Recreação';
+    el('event-role').value = 'Apoio aos participantes';
+    el('event-description').value = 'Leitura e brincadeiras em grupo';
+
+    el('event-form').dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
+
+    expect(el('stat-events').textContent).toBe('2');
+    expect(el('admin-event-list').textContent).toContain('Oficina de Leitura');
+
+    const newlyAdded = el('admin-event-list').querySelector('[data-event-id^="event-"]');
+    expect(newlyAdded).toBeTruthy();
+    newlyAdded.querySelector('button').click();
+
+    expect(el('calendar-month-title').textContent).toContain('Dezembro 2026');
+    expect(el('extra-events').textContent).toContain('Oficina de Leitura');
+    expect(el('calendar-view').hidden).toBe(false);
+  });
+
+  it('bloqueia um evento quando o horario de termino vem antes do inicio', () => {
+    el('go-admin').click();
+
+    el('event-name').value = 'Evento de Teste';
+    el('event-date').value = '2026-12-07';
+    el('event-start').value = '15:00';
+    el('event-end').value = '10:00';
+    el('event-place').value = 'Local de exemplo';
+    el('event-sector').value = 'Acolhimento';
+    el('event-role').value = 'Recepção';
+
+    el('event-form').dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
+
+    expect(el('stat-events').textContent).toBe('1');
+    expect(el('event-feedback').textContent).toContain('término');
+  });
+
+  it('permite navegar entre os meses no calendario', () => {
+    enviarLogin('voluntario@exemplo.org', '123456');
+    el('next-month').click();
+
+    expect(el('calendar-month-title').textContent).toContain('Dezembro 2026');
+    expect(el('calendar-day-grid').querySelectorAll('.day').length).toBe(31);
+    el('prev-month').click();
+    expect(el('calendar-month-title').textContent).toContain('Novembro 2026');
+  });
+
+  it('permite editar um evento existente no painel', () => {
+    el('go-admin').click();
+    const demo = el('admin-event-list').querySelector('[data-event-id="demo-event-14"]');
+    demo.querySelectorAll('button')[1].click();
+    expect(el('event-edit-id').value).toBe('demo-event-14');
+
+    el('event-name').value = 'Evento de Teste Editado';
+    el('event-form').dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
+
+    expect(el('stat-events').textContent).toBe('1');
+    expect(el('admin-event-list').textContent).toContain('Evento de Teste Editado');
   });
 
 });
