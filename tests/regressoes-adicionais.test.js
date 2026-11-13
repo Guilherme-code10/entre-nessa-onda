@@ -75,7 +75,11 @@ describe('Cenarios adicionais de regressao e limites',()=>{
     el('cap-recreation').value='1';
     submit('event-form');
     expect(el('event-feedback').textContent).toContain('escalados');
-    expect(saved('events')[0].slotsBySector['Recreação']).toBe(4);
+    // Evento padrao so e gravado no localStorage depois de uma alteracao aceita.
+    const rowAgain=el('admin-event-list').querySelector('[data-event-id="demo-event-14"]');
+    action(rowAgain,'Editar');
+    expect(el('cap-recreation').value).toBe('4');
+    expect(el('stat-assigned').textContent).toBe('2');
   });
 
   it('nao permite reconfirmar vaga recusada se outra pessoa a ocupou',()=>{
