@@ -89,30 +89,31 @@
       <nav class="mini-nav" aria-label="Abas do portal"><button class="chip selected" id="tab-calendar" aria-pressed="true" type="button"><svg class="tiny-icon" aria-hidden="true"><use href="#i-calendar"/></svg> Calendário</button><button class="chip" id="btn-my-scales" aria-pressed="false" type="button"><svg class="tiny-icon" aria-hidden="true"><use href="#i-check"/></svg> Minhas participações</button></nav>
       <div id="calendar-view" class="calendar-layout">
         <div class="calendar-card" aria-label="Calendário demonstrativo de novembro de 2026">
-          <div class="calendar-top"><button class="navbtn" aria-label="Mês anterior" id="prev-month" type="button">‹</button><strong>Novembro 2026</strong><button class="navbtn" aria-label="Próximo mês" id="next-month" type="button">›</button></div>
+          <div class="calendar-top"><button class="navbtn" aria-label="Mês anterior" id="prev-month" type="button">‹</button><strong id="calendar-month-title">Novembro 2026</strong><button class="navbtn" aria-label="Próximo mês" id="next-month" type="button">›</button></div>
           <div class="weekday" aria-hidden="true"><span>DOM</span><span>SEG</span><span>TER</span><span>QUA</span><span>QUI</span><span>SEX</span><span>SÁB</span></div>
-          <div class="day-grid" aria-label="Dias de novembro de 2026"><button class="day" data-day="1" type="button">1</button><button class="day" data-day="2" type="button">2</button><button class="day" data-day="3" type="button">3</button><button class="day" data-day="4" type="button">4</button><button class="day" data-day="5" type="button">5</button><button class="day" data-day="6" type="button">6</button><button class="day" data-day="7" type="button">7</button><button class="day" data-day="8" type="button">8</button><button class="day" data-day="9" type="button">9</button><button class="day" data-day="10" type="button">10</button><button class="day" data-day="11" type="button">11</button><button class="day" data-day="12" type="button">12</button><button class="day" data-day="13" type="button">13</button><button class="day event selected" data-day="14" type="button" aria-current="date" aria-label="14 de novembro, atividade demonstrativa selecionada">14</button><button class="day" data-day="15" type="button">15</button><button class="day" data-day="16" type="button">16</button><button class="day" data-day="17" type="button">17</button><button class="day" data-day="18" type="button">18</button><button class="day" data-day="19" type="button">19</button><button class="day" data-day="20" type="button">20</button><button class="day" data-day="21" type="button">21</button><button class="day" data-day="22" type="button">22</button><button class="day" data-day="23" type="button">23</button><button class="day" data-day="24" type="button">24</button><button class="day" data-day="25" type="button">25</button><button class="day" data-day="26" type="button">26</button><button class="day" data-day="27" type="button">27</button><button class="day" data-day="28" type="button">28</button><button class="day" data-day="29" type="button">29</button><button class="day" data-day="30" type="button">30</button></div>
-          <p class="calendar-note"><span class="dot"></span> Data com atividade: 14 de novembro</p>
-          <p class="calendar-help">Selecione uma data para conferir as ações da demonstração.</p>
+          <div class="day-grid" id="calendar-day-grid" aria-label="Dias do mês selecionado"><button class="day" data-day="1" type="button">1</button><button class="day" data-day="2" type="button">2</button><button class="day" data-day="3" type="button">3</button><button class="day" data-day="4" type="button">4</button><button class="day" data-day="5" type="button">5</button><button class="day" data-day="6" type="button">6</button><button class="day" data-day="7" type="button">7</button><button class="day" data-day="8" type="button">8</button><button class="day" data-day="9" type="button">9</button><button class="day" data-day="10" type="button">10</button><button class="day" data-day="11" type="button">11</button><button class="day" data-day="12" type="button">12</button><button class="day" data-day="13" type="button">13</button><button class="day event selected" data-day="14" type="button" aria-current="date" aria-label="14 de novembro, atividade demonstrativa selecionada">14</button><button class="day" data-day="15" type="button">15</button><button class="day" data-day="16" type="button">16</button><button class="day" data-day="17" type="button">17</button><button class="day" data-day="18" type="button">18</button><button class="day" data-day="19" type="button">19</button><button class="day" data-day="20" type="button">20</button><button class="day" data-day="21" type="button">21</button><button class="day" data-day="22" type="button">22</button><button class="day" data-day="23" type="button">23</button><button class="day" data-day="24" type="button">24</button><button class="day" data-day="25" type="button">25</button><button class="day" data-day="26" type="button">26</button><button class="day" data-day="27" type="button">27</button><button class="day" data-day="28" type="button">28</button><button class="day" data-day="29" type="button">29</button><button class="day" data-day="30" type="button">30</button></div>
+          <p class="calendar-note"><span class="dot"></span> <span id="calendar-legend">Datas com atividades têm um marcador amarelo</span></p>
+          <p class="calendar-help">Use as setas para navegar entre os meses e selecione um dia com atividade.</p>
         </div>
         <div class="activity-column">
           <div id="activity-panel">
-            <div class="agenda-label"><svg class="icon" aria-hidden="true"><use href="#i-calendar"/></svg><strong>Sábado, 14 de novembro</strong><span>1 atividade</span></div>
+            <div class="agenda-label"><svg class="icon" aria-hidden="true"><use href="#i-calendar"/></svg><strong id="demo-event-date">Sábado, 14 de novembro</strong><span id="demo-event-count">1 atividade</span></div>
             <article class="event-card">
               <div class="event-head"><span class="section-kicker">AÇÃO COMUNITÁRIA • EXEMPLO</span><span class="pill pending" id="escala-status">● Pendente</span></div>
               <div class="event-content">
                 <div class="event-visual" aria-hidden="true"><div class="scene-sun"></div><div class="scene-hill"></div><div class="scene-person one"><span></span></div><div class="scene-person two"><span></span></div><div class="scene-person three"><span></span></div><div class="scene-heart">♥</div><div class="scene-caption">JUNTOS FAZEMOS MAIS!</div></div>
-                <div class="event-details"><h2 class="event-title">Tarde de Brincadeiras</h2><p class="event-description">Uma tarde de acolhimento, jogos e muita alegria com as crianças da comunidade.</p>
-                <div class="event-metadata"><div class="info-row"><svg class="tiny-icon" aria-hidden="true"><use href="#i-clock"/></svg><span><small>Horário</small><strong>09h às 13h</strong></span></div><div class="info-row"><svg class="tiny-icon" aria-hidden="true"><use href="#i-pin"/></svg><span><small>Local</small><strong>Centro Comunitário Exemplo</strong></span></div></div>
-                <div class="role-row"><div class="role-col"><small>SETOR</small><strong>Recreação</strong></div><div class="role-col"><small>FUNÇÃO</small><strong>Apoio às atividades</strong></div></div></div>
+                <div class="event-details"><h2 class="event-title" id="demo-event-title">Tarde de Brincadeiras</h2><p class="event-description" id="demo-event-description">Uma tarde de acolhimento, jogos e muita alegria com as crianças da comunidade.</p>
+                <div class="event-metadata"><div class="info-row"><svg class="tiny-icon" aria-hidden="true"><use href="#i-clock"/></svg><span><small>Horário</small><strong id="demo-event-time">09h às 13h</strong></span></div><div class="info-row"><svg class="tiny-icon" aria-hidden="true"><use href="#i-pin"/></svg><span><small>Local</small><strong id="demo-event-place">Centro Comunitário Exemplo</strong></span></div></div>
+                <div class="role-row"><div class="role-col"><small>SETOR</small><strong id="demo-event-sector">Recreação</strong></div><div class="role-col"><small>FUNÇÃO</small><strong id="demo-event-role">Apoio às atividades</strong></div></div></div>
               </div>
               <div class="btn-stack"><button class="primary" id="btn-confirm" type="button"><svg class="tiny-icon" aria-hidden="true"><use href="#i-check"/></svg> Confirmar participação</button><button class="secondary" id="btn-decline" type="button">Não poderei participar</button></div>
             </article>
           </div>
+          <div id="extra-events" class="extra-events" aria-live="polite"></div>
           <div id="empty-day" class="empty-day" hidden><div class="empty-day-icon">☀</div><h2>Nenhuma atividade nesta data</h2><p id="empty-day-message">Não há uma atividade demonstrativa para este dia.</p><button class="secondary" type="button" id="back-to-event">Ver atividade de 14/11</button></div>
         </div>
       </div>
-      <section id="participations-view" class="participations-view" hidden aria-label="Minhas participações"><div class="participation-icon">♡</div><span class="section-kicker">MINHA JORNADA</span><h2>Minhas participações</h2><p>Esta área resume sua resposta à atividade demonstrativa. Em uma próxima versão, mostrará o histórico real das ações.</p><div class="participation-record"><div><strong>Tarde de Brincadeiras</strong><small>14/11/2026 • Recreação</small></div><span class="pill pending" id="participation-status">● Pendente</span></div><button class="primary" id="participations-back" type="button">Voltar ao calendário</button></section>
+      <section id="participations-view" class="participations-view" hidden aria-label="Minhas participações"><div class="participation-icon">♡</div><span class="section-kicker">MINHA JORNADA</span><h2>Minhas participações</h2><p>Esta área resume sua resposta à atividade demonstrativa. Em uma próxima versão, mostrará o histórico real das ações.</p><div id="participation-records" aria-live="polite"><div class="participation-record"><div><strong>Tarde de Brincadeiras</strong><small>14/11/2026 • Recreação</small></div><span class="pill pending" id="participation-status">● Pendente</span></div></div><button class="primary" id="participations-back" type="button">Voltar ao calendário</button></section>
       <footer class="workspace-footer">Feito para quem faz a diferença. <span>Protótipo acadêmico • sem dados reais</span></footer>
     </main>
     <nav class="bottom-bar" aria-label="Menu mobile"><button class="bottom-item current" id="nav-calendar" type="button"><svg class="icon" aria-hidden="true"><use href="#i-calendar"/></svg>Calendário</button><button class="bottom-item" id="nav-my" type="button"><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg>Participações</button><button class="bottom-item" id="nav-exit" type="button"><svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg>Sair</button></nav>
@@ -142,16 +143,53 @@
 
 
 <section id="screen-admin" class="screen admin-screen" aria-label="Painel administrativo demonstrativo">
- <header class="inner-topbar admin-topbar"><div class="inner-heading"><span class="inner-kicker">PROJETO ENTRE NESSA ONDA • GESTÃO</span><h1>Painel administrativo</h1><p>Materiais, estoque e cadastros em uma única visão.</p></div><button class="back-to-home" id="admin-back" type="button">← Voltar ao início</button></header>
+ <header class="inner-topbar admin-topbar"><div class="inner-heading"><span class="inner-kicker">PROJETO ENTRE NESSA ONDA • GESTÃO</span><h1>Painel administrativo</h1><p>Eventos, escalas, voluntários e materiais em uma única visão.</p></div><button class="back-to-home" id="admin-back" type="button">← Voltar ao início</button></header>
  <main class="admin-main">
   <p class="demo-warning"><svg class="tiny-icon" aria-hidden="true"><use href="#i-info"/></svg><span><strong>Área administrativa de demonstração — sem proteção por senha.</strong> Os materiais são fictícios, e os cadastros são locais deste navegador. Não utilize dados reais ou informações confidenciais.</span></p>
-  <div class="admin-intro"><div><span class="section-kicker">CONTROLE DE MATERIAIS</span><h2>Visão geral</h2><p>Organize os materiais necessários para as ações comunitárias.</p></div><button class="admin-reset" id="reset-demo-stock" type="button">Restaurar estoque de exemplo</button></div>
+  <div class="admin-intro"><div><span class="section-kicker">CONTROLE DE MATERIAIS</span><h2>Visão geral</h2><p>Organize ações comunitárias, materiais e o cadastro de voluntários.</p></div><button class="admin-reset" id="reset-demo-stock" type="button">Restaurar estoque de exemplo</button></div>
   <div class="stats-grid">
    <div class="stat-card"><span>Itens cadastrados</span><strong id="stat-products">0</strong><small>tipos de materiais</small></div>
    <div class="stat-card"><span>Unidades disponíveis</span><strong id="stat-units">0</strong><small>somadas em estoque</small></div>
    <div class="stat-card"><span>Estoque baixo</span><strong id="stat-low">0</strong><small>itens para repor</small></div>
    <div class="stat-card"><span>Cadastros de teste</span><strong id="stat-volunteers">0</strong><small>somente neste navegador</small></div>
+   <div class="stat-card stat-events"><span>Eventos cadastrados</span><strong id="stat-events">0</strong><small>ações de demonstração</small></div>
   </div>
+
+  <section class="admin-events" id="admin-events" aria-label="Gerenciamento de eventos e ações">
+    <div class="admin-events-heading">
+      <div><span class="section-kicker">AGENDA DA COMUNIDADE</span><h2>Eventos e ações</h2>
+        <p>Cadastre uma atividade e veja-a aparecer no calendário do portal neste navegador.</p></div>
+      <button class="admin-mini-btn" id="admin-open-calendar" type="button">Ver calendário de eventos ↗</button>
+    </div>
+    <div class="admin-grid events-grid">
+      <section class="admin-panel event-list-panel" aria-label="Eventos cadastrados">
+        <div class="admin-panel-heading"><div><h3>Próximos eventos cadastrados</h3><p>Edite, exclua ou consulte uma atividade pelo calendário.</p></div><span class="admin-panel-chip">AGENDA DEMO</span></div>
+        <div id="admin-event-list" class="admin-event-list" aria-live="polite"></div>
+      </section>
+      <section class="admin-panel event-form-panel" aria-label="Formulário de cadastro de evento">
+        <div class="admin-panel-heading"><div><h3 id="event-form-heading">Cadastrar novo evento</h3><p>Informe a programação e a equipe responsável.</p></div></div>
+        <form id="event-form" class="beautiful-form event-form" autocomplete="off">
+          <input type="hidden" id="event-edit-id" value="">
+          <div class="field"><label for="event-name">Nome do evento <span>*</span></label><input id="event-name" type="text" required minlength="3" maxlength="100" placeholder="Ex.: Tarde de Brincadeiras"></div>
+          <div class="field"><label for="event-date">Data <span>*</span></label><input id="event-date" type="date" required></div>
+          <div class="form-grid small-cols">
+            <div class="field"><label for="event-start">Início <span>*</span></label><input id="event-start" type="time" required></div>
+            <div class="field"><label for="event-end">Término <span>*</span></label><input id="event-end" type="time" required></div>
+          </div>
+          <div class="field"><label for="event-place">Local <span>*</span></label><input id="event-place" type="text" required maxlength="130" placeholder="Ex.: Centro Comunitário"></div>
+          <div class="form-grid small-cols">
+            <div class="field"><label for="event-sector">Setor <span>*</span></label><select id="event-sector" required><option value="">Selecione</option><option>Recreação</option><option>Acolhimento</option><option>Organização</option><option>Materiais</option><option>Apoio geral</option></select></div>
+            <div class="field"><label for="event-role">Função <span>*</span></label><input id="event-role" type="text" maxlength="90" required placeholder="Ex.: Apoio"></div>
+          </div>
+          <div class="field"><label for="event-description">Descrição da atividade</label><textarea id="event-description" maxlength="500" rows="3" placeholder="O que acontecerá nesta ação?"></textarea></div>
+          <div class="field"><label for="event-slots">Vagas de voluntários (opcional)</label><input id="event-slots" type="number" min="1" max="9999" placeholder="Ex.: 10"></div>
+          <button id="event-submit" class="primary" type="submit">Cadastrar evento</button>
+          <button id="event-cancel-edit" class="admin-mini-btn event-cancel" type="button" hidden>Cancelar edição</button>
+          <p id="event-feedback" class="form-feedback" role="status" aria-live="polite" hidden></p>
+        </form>
+      </section>
+    </div>
+  </section>
   <div class="admin-grid">
    <section class="admin-panel" aria-label="Lista de materiais"><div class="admin-panel-heading"><div><h3>Estoque de materiais</h3><p>Utilize + e − para simular a entrada e saída de unidades.</p></div><span class="admin-panel-chip">EXEMPLO</span></div><div id="inventory-list" class="inventory-list" aria-live="polite"></div></section>
    <section class="admin-panel admin-form-panel" aria-label="Cadastrar materiais"><div class="admin-panel-heading"><div><h3>Novo material</h3><p>Inclua um item no estoque demonstrativo.</p></div></div>
@@ -165,14 +203,14 @@
    </section>
   </div>
   <section class="admin-panel volunteer-admin" aria-label="Cadastros de voluntários"><div class="admin-panel-heading"><div><h3>Cadastros de voluntários</h3><p>Somente os cadastros demonstrativos criados neste navegador aparecerão aqui.</p></div><div class="volunteer-actions"><button id="admin-new-volunteer" class="admin-mini-btn" type="button">+ Novo cadastro</button><button id="clear-demo-people" class="admin-mini-btn danger" type="button">Apagar cadastros locais</button></div></div><div id="volunteer-list" class="volunteer-list"></div></section>
-  <p class="admin-bottom-note">Para controlar o estoque e os cadastros de verdade entre dispositivos, precisaremos conectar um banco de dados e autenticação administrativa.</p>
+  <p class="admin-bottom-note">Para compartilhar eventos, escalas, estoque e cadastros entre dispositivos, precisaremos conectar um banco de dados e autenticação administrativa.</p>
  </main>
 </section>
 
 <section id="screen-resultado" class="screen" aria-label="Tela 3: resultado da confirmação">
  <header class="result-hero"><div class="brand-lockup"><img class="official-logo result-logo" src="assets/logo-entre-nessa-onda.png" width="54" height="54" alt="Logo do Projeto Entre Nessa Onda"><div><div class="brand-name">Entre Nessa Onda</div><div class="brand-kicker">Área do voluntário</div></div></div><button type="button" class="back-link" id="result-back">← Voltar ao calendário</button><p class="result-head">Resultado da sua resposta</p></header>
  <main class="result-body"><div class="result-panel"><div class="big-check" id="result-symbol" aria-hidden="true"><svg width="39" height="39"><use href="#i-check"/></svg></div><h1 id="result-title" tabindex="-1" role="status" aria-live="polite">Disponibilidade confirmada!</h1><p class="lead" id="result-description">Sua resposta foi registrada no protótipo. A equipe poderá considerar sua confirmação no planejamento.</p><span class="pill confirmed" id="result-pill">✓ Status: Confirmada</span>
-  <div class="result-data"><div class="item"><span>Ação</span><strong>Tarde de Brincadeiras</strong></div><div class="item"><span>Data e horário</span><strong>14/11 • 09h–13h</strong></div><div class="item"><span>Local</span><strong>Centro Comunitário Exemplo</strong></div><div class="item"><span>Setor</span><strong>Recreação</strong></div><div class="item"><span>Função</span><strong>Apoio às atividades</strong></div><div class="item"><span>Disponibilidade</span><strong class="status" id="result-status">Confirmada</strong></div></div>
+  <div class="result-data"><div class="item"><span>Ação</span><strong id="result-event-name">Tarde de Brincadeiras</strong></div><div class="item"><span>Data e horário</span><strong id="result-event-when">14/11 • 09h–13h</strong></div><div class="item"><span>Local</span><strong id="result-event-place">Centro Comunitário Exemplo</strong></div><div class="item"><span>Setor</span><strong id="result-event-sector">Recreação</strong></div><div class="item"><span>Função</span><strong id="result-event-role">Apoio às atividades</strong></div><div class="item"><span>Disponibilidade</span><strong class="status" id="result-status">Confirmada</strong></div></div>
   <div class="notice"><svg class="icon" aria-hidden="true"><use href="#i-info"/></svg><span><strong>Importante:</strong> confirmar disponibilidade não registra presença. O comparecimento será anotado pelo líder durante a ação.</span></div>
  </div><div class="next-actions"><button class="primary" id="btn-back-calendar" type="button">Voltar ao calendário <svg class="tiny-icon" aria-hidden="true"><use href="#i-arrow"/></svg></button><button class="secondary" id="btn-view-scales" type="button">Ver minhas escalas</button></div><p class="muted-foot">Protótipo demonstrativo: o resultado não é gravado em banco de dados.</p></main>
 </section>
