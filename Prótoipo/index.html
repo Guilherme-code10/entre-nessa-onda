@@ -1,11 +1,10 @@
 <!doctype html>
 <html lang="pt-BR">
 <head>
-    <link rel="icon" type="image/svg+xml" href="favicon.svg" />
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<meta name="theme-color" content="#123A4A" />
-<title>Entre Nessa Onda — Protótipo demonstrativo</title>
+<meta name="theme-color" content="#04386c" />
+<title>Entre Nessa Onda | Portal de Voluntários</title>
 <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -25,7 +24,7 @@
 <section id="screen-login" class="screen active" aria-label="Tela 1: entrada principal">
  <header class="brand-header">
   <div class="brand-lockup"><div class="mark"><svg width="31" height="31" aria-hidden="true"><use href="#i-wave"/></svg></div><div><div class="brand-name">Entre Nessa Onda</div><div class="brand-kicker">Gestão de voluntários</div></div></div>
-  <div class="eyebrow">Conectando pessoas, organizando ações</div><h1 class="header-title">Fazer o bem começa com organização.</h1><p class="header-subtitle">Suas ações, escalas e participações reunidas em um só lugar.</p>
+  <div class="eyebrow">💛 Acolher, incluir e transformar</div><h1 class="header-title">Quem faz o bem merece uma organização à altura.</h1><p class="header-subtitle">Um portal de escalas e participações inspirado no Projeto Entre Nessa Onda.</p>
  </header>
  <main class="content">
   <div class="section-kicker">Acesso à plataforma</div><h2 class="section-title">Entre na sua conta</h2>
@@ -41,28 +40,67 @@
  <footer class="bottom-note">Protótipo acadêmico • dados fictícios • sem login real</footer>
 </section>
 
-<section id="screen-escala" class="screen" aria-label="Tela 2: calendário e confirmação de escala">
- <header class="topbar"><div class="brand-lockup"><div class="mark"><svg width="29" height="29" aria-hidden="true"><use href="#i-wave"/></svg></div><div><div class="brand-name">Entre Nessa Onda</div><div class="brand-kicker">Área do voluntário</div></div></div><div class="user-avatar" aria-label="Usuário fictício: Voluntário">VO</div></header>
- <main class="maincontent">
-  <div class="hello"><div><h1>Minhas escalas</h1><p>Confira suas próximas ações sociais.</p></div></div>
-  <nav class="mini-nav" aria-label="Navegação principal"><button class="chip selected" type="button">Calendário</button><button class="chip" id="btn-my-scales" type="button">Minhas participações</button></nav>
-  <div class="calendar-card" aria-label="Calendário de novembro de 2026"><div class="calendar-top"><button class="navbtn" aria-label="Mês anterior" id="prev-month" type="button">‹</button><strong>Novembro 2026</strong><button class="navbtn" aria-label="Próximo mês" id="next-month" type="button">›</button></div>
-  <div class="weekday" aria-hidden="true"><span>DOM</span><span>SEG</span><span>TER</span><span>QUA</span><span>QUI</span><span>SEX</span><span>SÁB</span></div>
-  <div class="day-grid" aria-label="Dias de novembro de 2026">
-   <button class="day" type="button">1</button><button class="day" type="button">2</button><button class="day" type="button">3</button><button class="day" type="button">4</button><button class="day" type="button">5</button><button class="day" type="button">6</button><button class="day" type="button">7</button>
-   <button class="day" type="button">8</button><button class="day" type="button">9</button><button class="day" type="button">10</button><button class="day" type="button">11</button><button class="day" type="button">12</button><button class="day" type="button">13</button><button class="day event selected" type="button" aria-label="14 de novembro, evento selecionado" aria-current="date">14</button>
-   <button class="day" type="button">15</button><button class="day" type="button">16</button><button class="day" type="button">17</button><button class="day" type="button">18</button><button class="day" type="button">19</button><button class="day" type="button">20</button><button class="day" type="button">21</button>
-   <button class="day" type="button">22</button><button class="day" type="button">23</button><button class="day" type="button">24</button><button class="day" type="button">25</button><button class="day" type="button">26</button><button class="day" type="button">27</button><button class="day" type="button">28</button>
-   <button class="day" type="button">29</button><button class="day" type="button">30</button><span></span><span></span><span></span><span></span><span></span>
-  </div><p class="calendar-note"><span class="dot"></span> Dia com atividade • 14 selecionado</p></div>
-  <div class="agenda-label"><strong>Sábado, 14 de novembro</strong><span>1 ação encontrada</span></div>
-  <article class="event-card"><div class="event-head"><span class="section-kicker">AÇÃO COMUNITÁRIA</span><span class="pill pending" id="escala-status">● Pendente</span></div><h2 class="event-title">Tarde de Brincadeiras</h2>
-   <div class="info-row"><svg class="tiny-icon" aria-hidden="true"><use href="#i-clock"/></svg> 09h às 13h</div><div class="info-row"><svg class="tiny-icon" aria-hidden="true"><use href="#i-pin"/></svg> Centro Comunitário Exemplo</div>
-   <div class="divider"></div><div class="role-row"><div class="role-col"><small>SEU SETOR</small><strong>Recreação</strong></div><div class="role-col"><small>SUA FUNÇÃO</small><strong>Apoio às atividades</strong></div></div>
-  </article>
-  <div class="btn-stack"><button class="primary" id="btn-confirm" type="button"><svg class="tiny-icon" aria-hidden="true"><use href="#i-check"/></svg> Confirmar participação</button><button class="secondary" id="btn-decline" type="button">Não poderei participar</button></div>
- </main>
- <nav class="bottom-bar" aria-label="Menu inferior"><button class="bottom-item current" type="button"><svg class="icon" aria-hidden="true"><use href="#i-calendar"/></svg>Calendário</button><button class="bottom-item" id="nav-my" type="button"><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg>Minhas escalas</button><button class="bottom-item" id="nav-exit" type="button"><svg class="icon" aria-hidden="true"><use href="#i-users"/></svg>Sair</button></nav>
+<section id="screen-escala" class="screen" aria-label="Portal do voluntário — escalas">
+  <aside class="sidebar" aria-label="Menu do portal">
+    <div class="sidebar-brand"><span class="project-emblem" aria-hidden="true"><span class="emblem-sun">✦</span><span class="emblem-words"><small>PROJETO</small>ENTRE<br>NESSA<br>ONDA</span><span class="emblem-wave">〰</span></span><span class="sidebar-brand-small">ENTRE<br>NESSA ONDA</span></div>
+    <div class="sidebar-caption">PORTAL DO VOLUNTÁRIO</div>
+    <nav class="side-nav" aria-label="Navegação principal">
+      <button class="side-link active" id="side-calendar" type="button"><svg class="icon" aria-hidden="true"><use href="#i-calendar"/></svg><span>Minhas escalas</span></button>
+      <button class="side-link" id="side-participations" type="button"><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg><span>Minhas participações</span></button>
+      <a class="side-link" href="https://www.instagram.com/projetoentrenessaonda/" target="_blank" rel="noopener noreferrer"><svg class="icon" aria-hidden="true"><use href="#i-users"/></svg><span>Conheça o projeto</span><span class="external-indicator" aria-hidden="true">↗</span></a>
+      <button class="side-link side-exit" id="side-logout" type="button"><svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg><span>Sair da demonstração</span></button>
+    </nav>
+    <div class="sidebar-spacer"></div>
+    <div class="sidebar-wave" aria-hidden="true"><span></span><span></span></div>
+    <p class="sidebar-motto"><span aria-hidden="true">♡</span> Acolher, incluir<br> e transformar vidas.</p>
+    <div class="sidebar-demo">Versão demonstrativa • 2026</div>
+  </aside>
+  <div class="dashboard-workspace">
+    <header class="topbar">
+      <div class="hero-copy"><span class="hero-eyebrow">JUNTOS FAZEMOS A DIFERENÇA</span><div class="hero-brand">PROJETO<br><strong>ENTRE NESSA ONDA</strong></div><p>O cuidado começa com quem escolhe participar. 💛</p></div>
+      <div class="hero-illustration"><svg viewBox="0 0 310 205" role="presentation" aria-hidden="true">
+<path d="M5 177c48-30 78-30 121 0s71 35 177-20v49H5z" fill="#1cd6e7" opacity=".88"/><path d="M15 189c52-23 72-9 105 1 58 18 122-5 185-21v36H15z" fill="#ffd331"/>
+<g transform="translate(117,12)"><ellipse cx="63" cy="109" rx="65" ry="69" fill="#0071da"/><ellipse cx="61" cy="110" rx="54" ry="57" fill="#139cec"/><path d="M4 77c4-48 27-70 70-67 35 2 51 22 54 65-38-20-77-20-124 2Z" fill="#ffcf24"/><path d="M25 25c16-20 55-24 80-7" stroke="#fff3a1" stroke-width="8" stroke-linecap="round" fill="none"/><ellipse cx="42" cy="96" rx="15" ry="19" fill="#fff"/><ellipse cx="86" cy="96" rx="15" ry="19" fill="#fff"/><circle cx="46" cy="99" r="8" fill="#174b87"/><circle cx="84" cy="99" r="8" fill="#174b87"/><circle cx="48" cy="97" r="3" fill="#fff"/><circle cx="86" cy="97" r="3" fill="#fff"/><path d="M45 131c11 20 31 24 42 0" stroke="#072d5a" stroke-width="7" stroke-linecap="round" fill="none"/><circle cx="23" cy="119" r="9" fill="#ff8e9e" opacity=".65"/><circle cx="106" cy="119" r="9" fill="#ff8e9e" opacity=".65"/></g>
+<circle cx="35" cy="32" r="6" fill="#ffcc20"/><path d="m23 57 9-6 9 6-9 6z" fill="#fff"/><circle cx="283" cy="32" r="6" fill="#fff"/><path d="m270 53 7-8 7 8-7 8z" fill="#ffda30"/>
+<path d="M56 112c18-23 42-23 59 2" stroke="#ffcf24" stroke-width="8" fill="none" stroke-linecap="round"/>
+<path d="M248 129c12-19 30-19 42 0" stroke="#fff" stroke-width="7" fill="none" stroke-linecap="round"/>
+</svg></div>
+      <div class="profile-chip"><span class="user-avatar" aria-hidden="true">V</span><span><strong>Olá, voluntário!</strong><small>Ambiente de demonstração</small></span></div>
+    </header>
+    <main class="maincontent">
+      <p class="demo-notice"><svg class="tiny-icon" aria-hidden="true"><use href="#i-info"/></svg> Protótipo acadêmico: agenda e participantes são exemplos fictícios. Sem cadastro ou salvamento real.</p>
+      <div class="hello"><div class="hello-icon"><svg class="icon" aria-hidden="true"><use href="#i-calendar"/></svg></div><div><span class="section-kicker">ORGANIZAÇÃO E PARTICIPAÇÃO</span><h1>Minhas escalas</h1><p>Confira as atividades, organize sua agenda e confirme sua participação nas ações do projeto.</p></div></div>
+      <nav class="mini-nav" aria-label="Abas do portal"><button class="chip selected" id="tab-calendar" aria-pressed="true" type="button"><svg class="tiny-icon" aria-hidden="true"><use href="#i-calendar"/></svg> Calendário</button><button class="chip" id="btn-my-scales" aria-pressed="false" type="button"><svg class="tiny-icon" aria-hidden="true"><use href="#i-check"/></svg> Minhas participações</button></nav>
+      <div id="calendar-view" class="calendar-layout">
+        <div class="calendar-card" aria-label="Calendário demonstrativo de novembro de 2026">
+          <div class="calendar-top"><button class="navbtn" aria-label="Mês anterior" id="prev-month" type="button">‹</button><strong>Novembro 2026</strong><button class="navbtn" aria-label="Próximo mês" id="next-month" type="button">›</button></div>
+          <div class="weekday" aria-hidden="true"><span>DOM</span><span>SEG</span><span>TER</span><span>QUA</span><span>QUI</span><span>SEX</span><span>SÁB</span></div>
+          <div class="day-grid" aria-label="Dias de novembro de 2026"><button class="day" data-day="1" type="button">1</button><button class="day" data-day="2" type="button">2</button><button class="day" data-day="3" type="button">3</button><button class="day" data-day="4" type="button">4</button><button class="day" data-day="5" type="button">5</button><button class="day" data-day="6" type="button">6</button><button class="day" data-day="7" type="button">7</button><button class="day" data-day="8" type="button">8</button><button class="day" data-day="9" type="button">9</button><button class="day" data-day="10" type="button">10</button><button class="day" data-day="11" type="button">11</button><button class="day" data-day="12" type="button">12</button><button class="day" data-day="13" type="button">13</button><button class="day event selected" data-day="14" type="button" aria-current="date" aria-label="14 de novembro, atividade demonstrativa selecionada">14</button><button class="day" data-day="15" type="button">15</button><button class="day" data-day="16" type="button">16</button><button class="day" data-day="17" type="button">17</button><button class="day" data-day="18" type="button">18</button><button class="day" data-day="19" type="button">19</button><button class="day" data-day="20" type="button">20</button><button class="day" data-day="21" type="button">21</button><button class="day" data-day="22" type="button">22</button><button class="day" data-day="23" type="button">23</button><button class="day" data-day="24" type="button">24</button><button class="day" data-day="25" type="button">25</button><button class="day" data-day="26" type="button">26</button><button class="day" data-day="27" type="button">27</button><button class="day" data-day="28" type="button">28</button><button class="day" data-day="29" type="button">29</button><button class="day" data-day="30" type="button">30</button></div>
+          <p class="calendar-note"><span class="dot"></span> Data com atividade: 14 de novembro</p>
+          <p class="calendar-help">Selecione uma data para conferir as ações da demonstração.</p>
+        </div>
+        <div class="activity-column">
+          <div id="activity-panel">
+            <div class="agenda-label"><svg class="icon" aria-hidden="true"><use href="#i-calendar"/></svg><strong>Sábado, 14 de novembro</strong><span>1 atividade</span></div>
+            <article class="event-card">
+              <div class="event-head"><span class="section-kicker">AÇÃO COMUNITÁRIA • EXEMPLO</span><span class="pill pending" id="escala-status">● Pendente</span></div>
+              <div class="event-content">
+                <div class="event-visual" aria-hidden="true"><div class="scene-sun"></div><div class="scene-hill"></div><div class="scene-person one"><span></span></div><div class="scene-person two"><span></span></div><div class="scene-person three"><span></span></div><div class="scene-heart">♥</div><div class="scene-caption">JUNTOS FAZEMOS MAIS!</div></div>
+                <div class="event-details"><h2 class="event-title">Tarde de Brincadeiras</h2><p class="event-description">Uma tarde de acolhimento, jogos e muita alegria com as crianças da comunidade.</p>
+                <div class="event-metadata"><div class="info-row"><svg class="tiny-icon" aria-hidden="true"><use href="#i-clock"/></svg><span><small>Horário</small><strong>09h às 13h</strong></span></div><div class="info-row"><svg class="tiny-icon" aria-hidden="true"><use href="#i-pin"/></svg><span><small>Local</small><strong>Centro Comunitário Exemplo</strong></span></div></div>
+                <div class="role-row"><div class="role-col"><small>SETOR</small><strong>Recreação</strong></div><div class="role-col"><small>FUNÇÃO</small><strong>Apoio às atividades</strong></div></div></div>
+              </div>
+              <div class="btn-stack"><button class="primary" id="btn-confirm" type="button"><svg class="tiny-icon" aria-hidden="true"><use href="#i-check"/></svg> Confirmar participação</button><button class="secondary" id="btn-decline" type="button">Não poderei participar</button></div>
+            </article>
+          </div>
+          <div id="empty-day" class="empty-day" hidden><div class="empty-day-icon">☀</div><h2>Nenhuma atividade nesta data</h2><p id="empty-day-message">Não há uma atividade demonstrativa para este dia.</p><button class="secondary" type="button" id="back-to-event">Ver atividade de 14/11</button></div>
+        </div>
+      </div>
+      <section id="participations-view" class="participations-view" hidden aria-label="Minhas participações"><div class="participation-icon">♡</div><span class="section-kicker">MINHA JORNADA</span><h2>Minhas participações</h2><p>Esta área resume sua resposta à atividade demonstrativa. Em uma próxima versão, mostrará o histórico real das ações.</p><div class="participation-record"><div><strong>Tarde de Brincadeiras</strong><small>14/11/2026 • Recreação</small></div><span class="pill pending" id="participation-status">● Pendente</span></div><button class="primary" id="participations-back" type="button">Voltar ao calendário</button></section>
+      <footer class="workspace-footer">Feito para quem faz a diferença. <span>Protótipo acadêmico • sem dados reais</span></footer>
+    </main>
+    <nav class="bottom-bar" aria-label="Menu mobile"><button class="bottom-item current" id="nav-calendar" type="button"><svg class="icon" aria-hidden="true"><use href="#i-calendar"/></svg>Calendário</button><button class="bottom-item" id="nav-my" type="button"><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg>Participações</button><button class="bottom-item" id="nav-exit" type="button"><svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg>Sair</button></nav>
+  </div>
 </section>
 
 <section id="screen-resultado" class="screen" aria-label="Tela 3: resultado da confirmação">
