@@ -589,4 +589,33 @@ describe('Integracao - Entre Nessa Onda', () => {
     expect(Number(el('stat-units').textContent)).toBe(initialUnits-3);
   });
 
+  it('exibe cadastro somente antes do login no acesso inicial', () => {
+    expect(el('screen-login').classList.contains('active')).toBe(true);
+    expect(el('go-register').textContent).toContain('Cadastre-se');
+    el('go-register').click();
+    expect(el('screen-cadastro').classList.contains('active')).toBe(true);
+    el('register-back').click();
+    expect(el('screen-login').classList.contains('active')).toBe(true);
+  });
+
+  it('oculta o cadastro dentro da area logada do voluntario', () => {
+    enviarLogin('voluntario@exemplo.org','senha-teste');
+    expect(el('screen-escala').classList.contains('active')).toBe(true);
+    expect(el('screen-escala').querySelector('#side-register')).toBeNull();
+    expect(el('screen-escala').querySelector('button[id*="register"]')).toBeNull();
+    // Mesmo disparando o atalho da tela inicial via codigo, nao volta ao formulario.
+    el('go-register').click();
+    expect(el('screen-cadastro').classList.contains('active')).toBe(false);
+    expect(el('screen-escala').classList.contains('active')).toBe(true);
+  });
+
+  it('area administrativa nao oferece a tela publica de cadastro', () => {
+    entrarAdmin();
+    expect(el('screen-admin').querySelector('#admin-new-volunteer')).toBeNull();
+    expect(el('screen-admin').textContent).toContain('se cadastram na tela inicial');
+    el('go-register').click();
+    expect(el('screen-cadastro').classList.contains('active')).toBe(false);
+    expect(el('screen-admin').classList.contains('active')).toBe(true);
+  });
+
 });

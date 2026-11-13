@@ -20,7 +20,7 @@
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Entre Nessa Onda | Portal de Voluntários">
 <meta name="twitter:image" content="https://guilherme-code10.github.io/entre-nessa-onda/assets/logo-entre-nessa-onda.png">
-<link rel="stylesheet" href="styles.css?v=20261113-entradas-7">
+<link rel="stylesheet" href="styles.css?v=20261113-cadastro-inicial-8">
 </head>
 <body>
 <svg aria-hidden="true" style="position:absolute;width:0;height:0;overflow:hidden" xmlns="http://www.w3.org/2000/svg"><defs>
@@ -51,7 +51,7 @@
    <div class="error-msg" id="login-error" role="alert">Informe um e-mail válido e preencha a senha para continuar.</div>
    <p id="login-help" class="muted-foot">Voluntário (demonstração): informe um e-mail válido e uma senha fictícia. Não use senhas reais.</p>
   </form>
-  <div class="entry-actions"><button type="button" id="go-register" class="entry-link"><svg class="tiny-icon" aria-hidden="true"><use href="#i-users"/></svg> Quero me cadastrar como voluntário</button><button type="button" id="go-admin" class="entry-link entry-link-admin"><svg class="tiny-icon" aria-hidden="true"><use href="#i-lock"/></svg> Acesso exclusivo da coordenação</button></div>
+  <div class="entry-actions"><button type="button" id="go-register" class="entry-link"><svg class="tiny-icon" aria-hidden="true"><use href="#i-users"/></svg> Ainda não tem cadastro? Cadastre-se</button><button type="button" id="go-admin" class="entry-link entry-link-admin"><svg class="tiny-icon" aria-hidden="true"><use href="#i-lock"/></svg> Acesso exclusivo da coordenação</button></div>
   <div class="privacy"><svg class="icon" aria-hidden="true"><use href="#i-lock"/></svg><p><strong>Seus dados, com cuidado.</strong><br/>Nesta demonstração, não há autenticação de verdade. Não use dados pessoais reais.</p></div>
  </main>
  <footer class="bottom-note">Protótipo acadêmico • dados fictícios • sem login real</footer>
@@ -90,7 +90,7 @@
       <button class="side-link active" id="side-calendar" type="button"><svg class="icon" aria-hidden="true"><use href="#i-calendar"/></svg><span>Minhas escalas</span></button>
       <button class="side-link" id="side-participations" type="button"><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg><span>Minhas participações</span></button>
       <a class="side-link" href="https://www.instagram.com/projetoentrenessaonda/" target="_blank" rel="noopener noreferrer"><svg class="icon" aria-hidden="true"><use href="#i-users"/></svg><span>Conheça o projeto</span><span class="external-indicator" aria-hidden="true">↗</span></a>
-      <button class="side-link" id="side-register" type="button"><svg class="icon" aria-hidden="true"><use href="#i-users"/></svg><span>Cadastro</span></button><button class="side-link side-exit" id="side-logout" type="button"><svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg><span>Sair da demonstração</span></button>
+      <button class="side-link side-exit" id="side-logout" type="button"><svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg><span>Sair da demonstração</span></button>
     </nav>
     <div class="sidebar-spacer"></div>
     <div class="sidebar-wave" aria-hidden="true"><span></span><span></span></div>
@@ -286,7 +286,7 @@
    </section>
   </div>
   <div class="admin-message-heading" id="admin-messages"><span class="section-kicker">CONTATO COM A EQUIPE</span><h2>Central de mensagens</h2><p>Selecione um voluntário autorizado, revise o texto e abra o WhatsApp para enviar manualmente.</p></div>
-  <section class="admin-panel volunteer-admin" id="volunteer-admin" aria-label="Cadastros e mensagens para voluntários"><div class="admin-panel-heading"><div><h3>Voluntários e contato por WhatsApp</h3><p>Os contatos são demonstrativos e ficam apenas neste navegador. Escolha o destinatário na Central de mensagens abaixo.</p></div><div class="volunteer-actions"><button id="admin-new-volunteer" class="admin-mini-btn" type="button">+ Novo cadastro</button><button id="clear-demo-people" class="admin-mini-btn danger" type="button">Apagar cadastros locais</button></div></div><div class="volunteer-message-panel" aria-label="Preparar mensagem individual">
+  <section class="admin-panel volunteer-admin" id="volunteer-admin" aria-label="Cadastros e mensagens para voluntários"><div class="admin-panel-heading"><div><h3>Voluntários e contato por WhatsApp</h3><p>Os contatos são demonstrativos e ficam apenas neste navegador. Escolha o destinatário na Central de mensagens abaixo.</p></div><div class="volunteer-actions"><span class="admin-signup-hint">Novos voluntários se cadastram na tela inicial, antes do login.</span><button id="clear-demo-people" class="admin-mini-btn danger" type="button">Apagar cadastros locais</button></div></div><div class="volunteer-message-panel" aria-label="Preparar mensagem individual">
     <div class="message-panel-heading"><span class="message-panel-icon" aria-hidden="true">💬</span><div><strong>Preparar mensagem</strong><p>Escolha o tipo de aviso e, se necessário, o evento. Depois use o WhatsApp na ficha do voluntário.</p></div></div>
     <div class="message-filters">
       <div class="field"><label for="message-kind">Tipo de mensagem</label><select id="message-kind"><option value="invite">Convite para evento</option><option value="reminder">Lembrete de evento</option><option value="general">Mensagem geral</option></select></div>
@@ -321,5 +321,5 @@
   <div class="notice"><svg class="icon" aria-hidden="true"><use href="#i-info"/></svg><span><strong>Importante:</strong> confirmar disponibilidade não registra presença. O comparecimento será anotado pelo líder durante a ação.</span></div>
  </div><div class="next-actions"><button class="primary" id="btn-back-calendar" type="button">Voltar ao calendário <svg class="tiny-icon" aria-hidden="true"><use href="#i-arrow"/></svg></button><button class="secondary" id="btn-view-scales" type="button">Ver minhas escalas</button></div><p class="muted-foot">Protótipo demonstrativo: o resultado não é gravado em banco de dados.</p></main>
 </section>
-<script type="module" src="app.js?v=20261113-entradas-7"></script>
+<script type="module" src="app.js?v=20261113-cadastro-inicial-8"></script>
 </body></html>
