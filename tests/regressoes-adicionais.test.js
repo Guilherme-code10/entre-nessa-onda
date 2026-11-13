@@ -180,7 +180,7 @@ describe('Cenarios adicionais de regressao e limites',()=>{
     action(el('volunteer-list'),'Excluir');
     expect(saved('volunteers').length).toBe(0);
     expect(saved('assignments').length).toBe(0);
-    expect(saved('events').length).toBe(1);
+    expect(el('stat-events').textContent).toBe('1');
     expect(el('stat-assigned').textContent).toBe('0');
   });
 
@@ -207,11 +207,15 @@ describe('Cenarios adicionais de regressao e limites',()=>{
 
   it('inventario nao permite quantidade abaixo de zero',()=>{
     admin();
-    const row=el('inventory-list').querySelector('.inventory-row');
-    expect(row).toBeTruthy();
-    const minus=[...row.querySelectorAll('button')].find(x=>x.textContent==='−');
-    for(let i=0;i<12;i++)minus.click();
-    expect(minus.disabled).toBe(true);
+    for(let i=0;i<12;i++){
+      const row=el('inventory-list').querySelector('.inventory-row');
+      const minus=[...row.querySelectorAll('button')].find(x=>x.textContent==='−');
+      expect(minus.disabled).toBe(false);
+      minus.click();
+    }
+    const finalRow=el('inventory-list').querySelector('.inventory-row');
+    const finalMinus=[...finalRow.querySelectorAll('button')].find(x=>x.textContent==='−');
+    expect(finalMinus.disabled).toBe(true);
     expect(saved('stock')[0].qty).toBe(0);
     expect(el('stat-units').textContent).toBe('17');
   });
