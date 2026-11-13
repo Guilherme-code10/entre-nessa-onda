@@ -398,4 +398,99 @@ describe('Integracao - Entre Nessa Onda', () => {
     expect(el('batch-whatsapp-rows').querySelectorAll('a').length).toBe(0);
   });
 
+  it('escala voluntario por evento e impede inclusao duplicada', () => {
+    el('go-register').click();
+    el('reg-name').value='Pessoa de Teste';
+    el('reg-email').value='escala@exemplo.org';
+    el('reg-area').value='Recreação';
+    el('reg-consent').checked=true;
+    el('volunteer-form').dispatchEvent(new Event('submit',{bubbles:true,cancelable:true}));
+    el('register-back').click();
+    entrarAdmin();
+    expect(el('scale-event').options.length).toBe(1);
+    expect(el('scale-volunteer').options.length).toBe(1);
+    el('scale-sector').value='Recreação';
+    el('scale-form').dispatchEvent(new Event('submit',{bubbles:true,cancelable:true}));
+    expect(el('stat-assigned').textContent).toBe('1');
+    expect(el('assignment-list').textContent).toContain('Pessoa de Teste');
+    el('scale-form').dispatchEvent(new Event('submit',{bubbles:true,cancelable:true}));
+    expect(el('stat-assigned').textContent).toBe('1');
+    expect(el('scale-feedback').textContent).toContain('já faz parte');
+  });
+
+  it('impede ultrapassar vagas de um setor e permite registrar presenca', () => {
+    function register(name,email){
+      el('go-register').click();
+      el('reg-name').value=name;
+      el('reg-email').value=email;
+      el('reg-area').value='Recreação';
+      el('reg-consent').checked=true;
+      el('volunteer-form').dispatchEvent(new Event('submit',{bubbles:true,cancelable:true}));
+      el('register-back').click();
+    }
+    register('Pessoa Um','um@exemplo.org');
+    register('Pessoa Dois','dois@exemplo.org');
+    entrarAdmin();
+    const demo=el('admin-event-list').querySelector('[data-event-id="demo-event-14"]');
+    demo.querySelectorAll('button')[1].click();
+    el('cap-recreation').value='1';
+    el('event-form').dispatchEvent(new Event('submit',{bubbles:true,cancelable:true}));
+    el('scale-sector').value='Recreação';
+    el('scale-form').dispatchEvent(new Event('submit',{bubbles:true,cancelable:true}));
+    expect(el('stat-assigned').textContent).toBe('1');
+    el('scale-volunteer').selectedIndex=1;
+    el('scale-form').dispatchEvent(new Event('submit',{bubbles:true,cancelable:true}));
+    expect(el('scale-feedback').textContent).toContain('vagas deste setor');
+    expect(el('stat-assigned').textContent).toBe('1');
+    const row=el('assignment-list').querySelector('[data-assignment-id]');
+    const confirm=[...row.querySelectorAll('button')].find(b=>b.textContent==='Confirmar');
+    confirm.click();
+    expect(el('stat-confirmed').textContent).toBe('1');
+    const present=[...el('assignment-list').querySelectorAll('button')].find(b=>b.textContent==='Presente');
+    present.click();
+    expect(el('report-attended').textContent).toBe('1');
+    expect(el('report-hours').textContent).toBe('4h');
+    expect(el('assignment-list').textContent).toContain('✓ Presente');
+  });
+
+  it('vincula materiais a eventos e da baixa no estoque uma so vez', () => {
+    entrarAdmin();
+    expect(el('stat-units').textContent).toBe('29');
+    el('materials-qty').value='5';
+    el('event-material-form').dispatchEvent(new Event('submit',{bubbles:true,cancelable:true}));
+    expect(el('event-material-list').textContent).toContain('5 unidades previstas');
+    expect(el('stat-units').textContent).toBe('29');
+    const row=el('event-material-list').querySelector('[data-material-plan-id]');
+    const consume=[...row.querySelectorAll('button')].find(b=>b.textContent==='Registrar uso');
+    consume.click();
+    expect(el('stat-units').textContent).toBe('24');
+    expect(el('report-materials').textContent).toBe('5');
+    expect(el('event-material-list').textContent).toContain('Baixa realizada');
+    expect(el('event-material-list').querySelector('button')).toBeNull();
+  });
+
+  it('mostra ao voluntario somente escalas associadas ao e-mail cadastrado', () => {
+    el('go-register').click();
+    el('reg-name').value='Voluntário de Teste';
+    el('reg-email').value='projeto@exemplo.org';
+    el('reg-area').value='Recreação';
+    el('reg-consent').checked=true;
+    el('volunteer-form').dispatchEvent(new Event('submit',{bubbles:true,cancelable:true}));
+    el('register-back').click();
+    entrarAdmin();
+    el('scale-sector').value='Recreação';
+    el('scale-form').dispatchEvent(new Event('submit',{bubbles:true,cancelable:true}));
+    el('admin-back').click();
+    enviarLogin('projeto@exemplo.org','senha-teste');
+    el('btn-my-scales').click();
+    expect(el('participation-records').textContent).toContain('Tarde de Brincadeiras');
+    el('participations-back').click();
+    el('btn-confirm').click();
+    expect(el('result-status').textContent).toBe('Confirmada');
+    el('result-back').click();
+    el('side-logout').click();
+    entrarAdmin();
+    expect(el('report-confirmed').textContent).toBe('1');
+  });
+
 });

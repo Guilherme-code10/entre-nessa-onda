@@ -8,6 +8,9 @@ import { validarLogin, obterStatusDisponibilidade } from './regras.js';
   const PEOPLE_KEY = 'entre_nessa_onda_volunteers_demo_v1';
   const EVENT_KEY = 'entre_nessa_onda_events_demo_v1';
   const RESPONSE_KEY = 'entre_nessa_onda_event_responses_demo_v1';
+  const ASSIGN_KEY = 'entre_nessa_onda_assignments_demo_v1';
+  const EVENT_MATERIAL_KEY = 'entre_nessa_onda_event_materials_demo_v1';
+  const SECTORS = ['Recreação','Acolhimento','Organização','Materiais','Apoio geral'];
   const DEMO_EVENT_ID = 'demo-event-14';
   const defaultEvents = [{
     id: DEMO_EVENT_ID,
@@ -16,7 +19,8 @@ import { validarLogin, obterStatusDisponibilidade } from './regras.js';
     place: 'Centro Comunitário Exemplo', sector: 'Recreação',
     role: 'Apoio às atividades',
     description: 'Uma tarde de acolhimento, jogos e muita alegria com as crianças da comunidade.',
-    slots: null
+    slots: null,
+    slotsBySector: {'Recreação': 4, 'Acolhimento': 3, 'Organização': 2, 'Materiais': 1, 'Apoio geral': 2}
   }];
   const defaultStock = [
     { id: 'demo-1', name: 'Bolas e materiais recreativos', category: 'Recreação', qty: 12, min: 5 },
@@ -29,14 +33,19 @@ import { validarLogin, obterStatusDisponibilidade } from './regras.js';
   let people = readStore(PEOPLE_KEY, []);
   let events = readStore(EVENT_KEY, defaultEvents);
   let responses = readStore(RESPONSE_KEY, {});
+  let assignments = readStore(ASSIGN_KEY, []);
+  let eventMaterials = readStore(EVENT_MATERIAL_KEY, []);
   if (!Array.isArray(stock)) stock = clone(defaultStock);
   if (!Array.isArray(people)) people = [];
+  if (!Array.isArray(assignments)) assignments = [];
+  if (!Array.isArray(eventMaterials)) eventMaterials = [];
   if (!Array.isArray(events)) events = clone(defaultEvents);
   events = events.filter(event => event && typeof event.id === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(event.date || '') && typeof event.title === 'string');
   if (!responses || typeof responses !== 'object' || Array.isArray(responses)) responses = {};
   let status = 'pendente';
   let loginRole = 'volunteer';
   let currentRole = null;
+  let activeVolunteerId = null;
   const batchSelected = new Set();
   const batchOpened = new Set();
   let viewYear = 2026, viewMonth = 10, selectedDate = '2026-11-14';
@@ -116,6 +125,10 @@ import { validarLogin, obterStatusDisponibilidade } from './regras.js';
   }
 
   function eventStatus(event) {
+    if(activeVolunteerId){
+      const row=assignments.find(a=>a.eventId===event.id&&a.volunteerId===activeVolunteerId);
+      return row ? row.status : 'pendente';
+    }
     const saved = responses[event.id];
     return saved === 'confirmada' || saved === 'recusada' ? saved : 'pendente';
   }
@@ -138,7 +151,7 @@ import { validarLogin, obterStatusDisponibilidade } from './regras.js';
     for(let i=0;i<firstDay;i++) grid.append(create('span','calendar-blank'));
     for(let day=1;day<=total;day++){
       const iso = dateFromParts(viewYear,viewMonth+1,day);
-      const available = events.some(event => event.date === iso);
+      const available = events.some(event => event.date === iso && (!activeVolunteerId || assignments.some(a=>a.eventId===event.id&&a.volunteerId===activeVolunteerId)));
       const selected = iso === selectedDate;
       const btn = create('button','day' + (available?' event has-events':'') + (selected?' selected':''), day);
       btn.dataset.day = String(day);
@@ -149,6 +162,7 @@ import { validarLogin, obterStatusDisponibilidade } from './regras.js';
       grid.append(btn);
     }
     const count = events.filter(event=>{
+      if(activeVolunteerId && !assignments.some(a=>a.eventId===event.id&&a.volunteerId===activeVolunteerId))return false;
       const p = dateParts(event.date);
       return p.y === viewYear && p.m === viewMonth + 1;
     }).length;
@@ -186,7 +200,7 @@ import { validarLogin, obterStatusDisponibilidade } from './regras.js';
   }
 
   function renderDay() {
-    const dayEvents = events.filter(e=>e.date===selectedDate)
+    const dayEvents = events.filter(e=>e.date===selectedDate && (!activeVolunteerId || assignments.some(a=>a.eventId===e.id&&a.volunteerId===activeVolunteerId)))
       .sort((a,b)=>(a.start||'').localeCompare(b.start||''));
     const demo=dayEvents.find(e=>e.id===DEMO_EVENT_ID);
     el('activity-panel').hidden=!demo;
@@ -215,7 +229,10 @@ import { validarLogin, obterStatusDisponibilidade } from './regras.js';
   function renderParticipations(){
     const list=el('participation-records');
     list.replaceChildren();
-    const ordered=[...events].sort((a,b)=>a.date.localeCompare(b.date)||a.start.localeCompare(b.start));
+    const ordered=[...events].filter(event=>!activeVolunteerId || assignments.some(a=>a.eventId===event.id && a.volunteerId===activeVolunteerId)).sort((a,b)=>a.date.localeCompare(b.date)||a.start.localeCompare(b.start));
+    el('participations-explainer').textContent=activeVolunteerId
+      ? 'Estas são as atividades em que você foi escalado neste navegador. Confirme sua participação para ajudar a coordenação.'
+      : 'Aqui estão as atividades demonstrativas. Para ver escalas associadas ao seu cadastro, use no login o mesmo e-mail que informou no formulário.';
     ordered.forEach(event=>{
       const row=create('div','participation-record');
       const details=create('div');
@@ -251,8 +268,15 @@ import { validarLogin, obterStatusDisponibilidade } from './regras.js';
   function updateResult(confirmed, event=events.find(x=>x.id===DEMO_EVENT_ID)) {
     if(!event)return;
     status=obterStatusDisponibilidade(confirmed);
-    responses[event.id]=status;
-    saveStore(RESPONSE_KEY,responses);
+    const assigned=activeVolunteerId && assignments.find(a=>a.eventId===event.id&&a.volunteerId===activeVolunteerId);
+    if(assigned){
+      assigned.status=status;
+      assigned.attendance='pendente';
+      saveStore(ASSIGN_KEY,assignments);
+    }else{
+      responses[event.id]=status;
+      saveStore(RESPONSE_KEY,responses);
+    }
     const name=confirmed?'Confirmada':'Recusada';
     const klass='pill '+(confirmed?'confirmed':'no');
     if(event.id===DEMO_EVENT_ID){
@@ -341,6 +365,7 @@ import { validarLogin, obterStatusDisponibilidade } from './regras.js';
     item.qty = quantity;
     saveStore(STOCK_KEY, stock);
     renderInventory();
+    renderEventMaterials();
   }
 
   function whatsappPhone(raw) {
@@ -569,7 +594,9 @@ import { validarLogin, obterStatusDisponibilidade } from './regras.js';
       remove.setAttribute('aria-label','Excluir cadastro de teste de '+person.name);
       remove.addEventListener('click',()=>{
         people=people.filter(x=>x.id!==person.id);
+        assignments=assignments.filter(a=>a.volunteerId!==person.id);
         saveStore(PEOPLE_KEY,people);
+        saveStore(ASSIGN_KEY,assignments);
         renderAdmin();
       });
       actions.append(remove);
@@ -601,9 +628,17 @@ import { validarLogin, obterStatusDisponibilidade } from './regras.js';
       see.type='button';see.addEventListener('click',()=>jumpToEvent(event));
       const edit=create('button','','Editar');
       edit.type='button';edit.addEventListener('click',()=>editEvent(event));
+      const scale=create('button','','Organizar escala');
+      scale.type='button';
+      scale.addEventListener('click',()=>{
+        renderScales();
+        el('scale-event').value=event.id;
+        renderScales();
+        el('admin-scales').scrollIntoView?.({behavior:'smooth',block:'start'});
+      });
       const remove=create('button','danger','Excluir');
       remove.type='button';remove.addEventListener('click',()=>deleteEvent(event));
-      buttons.append(see,edit,remove);
+      buttons.append(see,edit,scale,remove);
       info.append(buttons);
       row.append(date,info);
       list.append(row);
@@ -618,6 +653,7 @@ import { validarLogin, obterStatusDisponibilidade } from './regras.js';
     el('event-form-heading').textContent='Cadastrar novo evento';
     el('event-submit').textContent='Cadastrar evento';
     el('event-cancel-edit').hidden=true;
+    document.querySelectorAll('[data-cap-sector]').forEach(input=>input.value='');
   }
 
   function editEvent(event) {
@@ -631,6 +667,10 @@ import { validarLogin, obterStatusDisponibilidade } from './regras.js';
     el('event-role').value=event.role || '';
     el('event-description').value=event.description || '';
     el('event-slots').value=event.slots || '';
+    const cap=eventCapacity(event);
+    document.querySelectorAll('[data-cap-sector]').forEach(input=>{
+      input.value=cap[input.dataset.capSector] || '';
+    });
     el('event-form-heading').textContent='Editar evento';
     el('event-submit').textContent='Salvar alterações';
     el('event-cancel-edit').hidden=false;
@@ -648,11 +688,253 @@ import { validarLogin, obterStatusDisponibilidade } from './regras.js';
     events=next;
     delete responses[event.id];
     saveStore(RESPONSE_KEY,responses);
+    assignments=assignments.filter(a=>a.eventId!==event.id);
+    eventMaterials=eventMaterials.filter(m=>m.eventId!==event.id);
+    saveStore(ASSIGN_KEY,assignments);
+    saveStore(EVENT_MATERIAL_KEY,eventMaterials);
     if(el('event-edit-id').value===event.id)resetEventForm();
     renderAdmin();
     renderCalendar();
     renderDay();
     renderParticipations();
+  }
+
+
+  function eventCapacity(event) {
+    const stored=event.slotsBySector && typeof event.slotsBySector==='object' ? event.slotsBySector : {};
+    const bySector={};
+    for(const name of SECTORS){
+      const number=Number(stored[name]);
+      if(Number.isInteger(number)&&number>0&&number<=999)bySector[name]=number;
+    }
+    if(!Object.keys(bySector).length && Number.isInteger(Number(event.slots)) && Number(event.slots)>0)
+      bySector[event.sector||'Apoio geral']=Number(event.slots);
+    return bySector;
+  }
+
+  function selectedEvent(selectId) {
+    return events.find(e=>e.id===el(selectId).value);
+  }
+
+  function populateSelect(id, items, textFor, emptyText) {
+    const select=el(id);
+    const previous=select.value;
+    select.replaceChildren();
+    if(!items.length){
+      const option=create('option','',emptyText);
+      option.value='';
+      select.append(option);
+      return;
+    }
+    items.forEach(item=>{
+      const option=create('option','',textFor(item));
+      option.value=item.id;
+      select.append(option);
+    });
+    if(items.some(item=>item.id===previous))select.value=previous;
+  }
+
+  function saveAssignments() {
+    return saveStore(ASSIGN_KEY,assignments);
+  }
+
+  function staffingCount(eventId,sector) {
+    return assignments.filter(a=>a.eventId===eventId && a.sector===sector && a.status!=='recusada').length;
+  }
+
+  function renderScales() {
+    const ordered=[...events].sort((a,b)=>a.date.localeCompare(b.date));
+    populateSelect('scale-event',ordered,e=>e.title+' • '+formatDate(e.date),'Cadastre um evento primeiro');
+    const volunteerOptions=[...people].sort((a,b)=>a.name.localeCompare(b.name,'pt-BR'));
+    populateSelect('scale-volunteer',volunteerOptions,p=>p.name+' • '+p.area,'Cadastre um voluntário primeiro');
+    const event=selectedEvent('scale-event');
+    const sector=el('scale-sector');
+    if(event&&event.sector && !sector.value)sector.value=event.sector;
+    const meters=el('sector-progress-list');
+    meters.replaceChildren();
+    const list=el('assignment-list');
+    list.replaceChildren();
+    if(!event){
+      list.append(create('p','assignment-empty','Cadastre um evento para organizar a escala.'));
+      meters.append(create('p','assignment-empty','As vagas por setor aparecerão aqui.'));
+    }else{
+      const limits=eventCapacity(event);
+      const sectors=Object.keys(limits).length?Object.keys(limits):[event.sector||'Apoio geral'];
+      sectors.forEach(name=>{
+        const capacity=limits[name]||0;
+        const filled=staffingCount(event.id,name);
+        const box=create('div','sector-meter');
+        const header=create('div','sector-meter-label');
+        header.append(create('span','',name),create('span','',capacity?filled+' de '+capacity+' vagas':filled+' escalados • sem limite'));
+        const track=create('div','sector-track');
+        const fill=create('div','sector-fill'+(capacity&&filled>=capacity?' full':''));
+        fill.style.width=(capacity?Math.min(100,100*filled/capacity):0)+'%';
+        track.append(fill);
+        box.append(header,track);
+        meters.append(box);
+      });
+      const assigned=assignments.filter(a=>a.eventId===event.id);
+      assigned.forEach(item=>{
+        const person=people.find(p=>p.id===item.volunteerId);
+        if(!person)return;
+        const row=create('div','assignment-row');
+        row.dataset.assignmentId=item.id;
+        const main=create('div','assignment-main');
+        const info=create('div');
+        info.append(create('strong','',person.name),create('small','',item.sector+' • '+person.email));
+        const label=create('span','assignment-status '+item.status,
+          item.status==='confirmada'?'✓ Confirmado':item.status==='recusada'?'✕ Recusou':'● Pendente');
+        main.append(info,label);
+        const buttons=create('div','assignment-actions');
+        const actions=[
+          ['Confirmar','confirmada'],
+          ['Recusar','recusada'],
+          ['Presente','presente'],
+          ['Ausente','ausente']
+        ];
+        actions.forEach(([title,action])=>{
+          const button=create('button','',title);
+          button.type='button';
+          button.disabled=(action==='presente'||action==='ausente') && item.status!=='confirmada';
+          button.addEventListener('click',()=>changeAssignment(item.id,action));
+          buttons.append(button);
+        });
+        const remove=create('button','danger','Remover');
+        remove.type='button';
+        remove.addEventListener('click',()=>changeAssignment(item.id,'remover'));
+        buttons.append(remove);
+        const presence=create('div','assignment-presence','Presença: '+(item.attendance==='presente'?'✓ Presente':item.attendance==='ausente'?'✕ Ausente':'Aguardando registro'));
+        row.append(main,buttons,presence);
+        list.append(row);
+      });
+      if(!assigned.length)list.append(create('p','assignment-empty','Nenhum voluntário escalado para esta atividade. Utilize o formulário ao lado.'));
+    }
+    el('stat-assigned').textContent=String(assignments.filter(a=>a.status!=='recusada').length);
+    el('stat-confirmed').textContent=String(assignments.filter(a=>a.status==='confirmada').length);
+  }
+
+  function changeAssignment(id,action) {
+    const item=assignments.find(a=>a.id===id);
+    if(!item)return;
+    if(action==='remover'){
+      assignments=assignments.filter(a=>a.id!==id);
+    }else if(action==='presente'||action==='ausente'){
+      if(item.status!=='confirmada')return;
+      item.attendance=action;
+    }else{
+      if(action==='confirmada' && item.status==='recusada'){
+        const event=events.find(e=>e.id===item.eventId);
+        const limit=event && eventCapacity(event)[item.sector];
+        if(limit && staffingCount(item.eventId,item.sector)>=limit){
+          feedback('scale-feedback','O setor está com todas as vagas ocupadas.',true);return;
+        }
+      }
+      item.status=action;
+      item.attendance='pendente';
+    }
+    if(!saveAssignments()){
+      feedback('scale-feedback','Não foi possível salvar esta alteração neste navegador.',true);
+      return;
+    }
+    renderScales();
+    renderReports();
+    renderParticipations();
+    renderCalendar();
+    renderDay();
+  }
+
+  function eventMinutes(event) {
+    if(!/^\d{2}:\d{2}$/.test(event.start||'')||!/^\d{2}:\d{2}$/.test(event.end||''))return 0;
+    const from=Number(event.start.slice(0,2))*60+Number(event.start.slice(3));
+    const to=Number(event.end.slice(0,2))*60+Number(event.end.slice(3));
+    return Math.max(0,to-from);
+  }
+
+  function renderReports() {
+    const active=assignments.filter(a=>a.status!=='recusada');
+    const confirmed=assignments.filter(a=>a.status==='confirmada');
+    const attended=confirmed.filter(a=>a.attendance==='presente');
+    const minutes=attended.reduce((sum,a)=>sum+eventMinutes(events.find(e=>e.id===a.eventId)||{}),0);
+    const consumed=eventMaterials.filter(m=>m.consumed).reduce((sum,m)=>sum+(Number(m.qty)||0),0);
+    el('report-events').textContent=String(events.length);
+    el('report-confirmed').textContent=String(confirmed.length);
+    el('report-attended').textContent=String(attended.length);
+    const hours=minutes/60;
+    el('report-hours').textContent=(Number.isInteger(hours)?String(hours):hours.toFixed(1).replace('.',','))+'h';
+    el('report-materials').textContent=String(consumed);
+    el('stat-assigned').textContent=String(active.length);
+    el('stat-confirmed').textContent=String(confirmed.length);
+    const list=el('report-event-list');
+    list.replaceChildren();
+    events.forEach(event=>{
+      const assigned=assignments.filter(a=>a.eventId===event.id);
+      const row=create('div','report-event-row');
+      const info=create('div');
+      info.append(create('strong','',event.title),create('small','',formatDate(event.date)+' • '+eventTime(event)));
+      const counters=create('div','report-badges');
+      const values=[
+        assigned.filter(a=>a.status!=='recusada').length+' escalados',
+        assigned.filter(a=>a.status==='confirmada').length+' confirmados',
+        assigned.filter(a=>a.attendance==='presente').length+' presentes'
+      ];
+      values.forEach(value=>counters.append(create('span','',value)));
+      row.append(info,counters);
+      list.append(row);
+    });
+    if(!events.length)list.append(create('p','assignment-empty','Ainda não há eventos para resumir.'));
+  }
+
+  function renderEventMaterials() {
+    const sorted=[...events].sort((a,b)=>a.date.localeCompare(b.date));
+    populateSelect('materials-event',sorted,e=>e.title+' • '+formatDate(e.date),'Cadastre um evento primeiro');
+    populateSelect('materials-stock',stock,x=>x.name+' • '+x.qty+' un. em estoque','Cadastre materiais no estoque');
+    const event=selectedEvent('materials-event');
+    const list=el('event-material-list');
+    list.replaceChildren();
+    eventMaterials.filter(m=>event && m.eventId===event.id).forEach(item=>{
+      const material=stock.find(s=>s.id===item.stockId);
+      const available=material?Number(material.qty):0;
+      const row=create('div','planned-row');
+      row.dataset.materialPlanId=item.id;
+      const info=create('div','planned-row-info');
+      info.append(create('strong','',material?.name||'Material removido do estoque'),
+        create('small','',item.qty+' unidades previstas • '+(item.consumed?'✓ Baixa realizada':available<item.qty?'⚠ Estoque insuficiente ('+available+' disponíveis)':'Disponível no estoque: '+available)));
+      const actions=create('div','planned-actions');
+      if(!item.consumed){
+        const consume=create('button','','Registrar uso');
+        consume.type='button';
+        consume.disabled=!material || available<item.qty;
+        consume.addEventListener('click',()=>consumeMaterial(item.id));
+        actions.append(consume);
+        const remove=create('button','danger','Remover');
+        remove.type='button';
+        remove.addEventListener('click',()=>{
+          eventMaterials=eventMaterials.filter(x=>x.id!==item.id);
+          saveStore(EVENT_MATERIAL_KEY,eventMaterials);
+          renderEventMaterials();renderReports();
+        });
+        actions.append(remove);
+      }
+      row.append(info,actions);
+      list.append(row);
+    });
+    if(!list.children.length)list.append(create('p','material-empty','Nenhum material vinculado a este evento.'));
+  }
+
+  function consumeMaterial(id) {
+    const plan=eventMaterials.find(x=>x.id===id);
+    if(!plan||plan.consumed)return;
+    const item=stock.find(s=>s.id===plan.stockId);
+    if(!item || !Number.isSafeInteger(Number(item.qty)) || Number(item.qty)<plan.qty){
+      feedback('materials-feedback','Estoque insuficiente: revise as quantidades antes de registrar o uso.',true);return;
+    }
+    item.qty=Number(item.qty)-plan.qty;
+    plan.consumed=true;
+    if(!saveStore(STOCK_KEY,stock)||!saveStore(EVENT_MATERIAL_KEY,eventMaterials)){
+      feedback('materials-feedback','Não foi possível salvar a baixa de estoque.',true);return;
+    }
+    feedback('materials-feedback','Baixa registrada neste navegador: '+plan.qty+' unidades utilizadas.');
+    renderInventory();renderEventMaterials();renderReports();
   }
 
   function renderAdmin() {
@@ -661,6 +943,9 @@ import { validarLogin, obterStatusDisponibilidade } from './regras.js';
     renderMessageOptions();
     renderPeople();
     renderMessageRecipients();
+    renderScales();
+    renderEventMaterials();
+    renderReports();
   }
 
   function setLoginRole(role) {
@@ -683,6 +968,7 @@ import { validarLogin, obterStatusDisponibilidade } from './regras.js';
 
   function logout() {
     currentRole=null;
+    activeVolunteerId=null;
     setLoginRole('volunteer');
     go('login');
   }
@@ -698,14 +984,14 @@ import { validarLogin, obterStatusDisponibilidade } from './regras.js';
       const valid=email.value.trim().toLowerCase()==='admin@entrenessaonda.demo' && password.value==='Onda2026!';
       el('login-error').classList.toggle('show',!valid);
       el('login-error').textContent=valid?'':'Credenciais de demonstração inválidas. Utilize as informações exibidas abaixo.';
-      if(valid){currentRole='admin';go('admin');}
+      if(valid){currentRole='admin';activeVolunteerId=null;go('admin');}
       else email.focus();
       return;
     }
     const valid = validarLogin(email.checkValidity(), password.value);
     el('login-error').classList.toggle('show', !valid);
     el('login-error').textContent='Informe um e-mail válido e preencha a senha para continuar.';
-    if (valid){currentRole='volunteer';view('calendar');}
+    if (valid){currentRole='volunteer';activeVolunteerId=people.find(p=>p.email===email.value.trim().toLowerCase())?.id||null;view('calendar');}
     else (email.checkValidity()?password:email).focus();
   });
 
@@ -826,8 +1112,20 @@ import { validarLogin, obterStatusDisponibilidade } from './regras.js';
       feedback('event-feedback','Confira os campos obrigatórios. O horário de término deve ser posterior ao início.',true);
       return;
     }
+    const slotsBySector={};
+    let capacityInvalid=false;
+    document.querySelectorAll('[data-cap-sector]').forEach(input=>{
+      if(!input.value.trim())return;
+      const number=Number(input.value);
+      if(!Number.isInteger(number)||number<0||number>999)capacityInvalid=true;
+      else if(number>0)slotsBySector[input.dataset.capSector]=number;
+    });
+    if(capacityInvalid){
+      feedback('event-feedback','Revise as vagas de cada setor: use números inteiros entre 0 e 999.',true);return;
+    }
+    if(!Object.keys(slotsBySector).length && slots)slotsBySector[sector]=slots;
     const item={id: id || 'event-'+Date.now()+'-'+Math.random().toString(36).slice(2),
-      title,date,start,end,place,sector,role,description,slots};
+      title,date,start,end,place,sector,role,description,slots,slotsBySector};
     const next=id?events.map(e=>e.id===id?item:e):[...events,item];
     if(id && !events.some(e=>e.id===id)){
       feedback('event-feedback','Este evento não existe mais. Atualize a lista e tente novamente.',true);
@@ -847,6 +1145,61 @@ import { validarLogin, obterStatusDisponibilidade } from './regras.js';
   });
   el('event-cancel-edit').addEventListener('click',()=>{resetEventForm();el('event-feedback').hidden=true;});
   el('admin-open-calendar').addEventListener('click',()=>view('calendar'));
+
+
+  el('scale-event').addEventListener('change',()=>{
+    renderScales();
+  });
+  el('scale-form').addEventListener('submit',event=>{
+    event.preventDefault();
+    const evt=selectedEvent('scale-event');
+    const volunteer=people.find(p=>p.id===el('scale-volunteer').value);
+    const sector=el('scale-sector').value;
+    if(!evt || !volunteer || !SECTORS.includes(sector)){
+      feedback('scale-feedback','Selecione um evento, um voluntário e o setor de atuação.',true);return;
+    }
+    if(assignments.some(a=>a.eventId===evt.id&&a.volunteerId===volunteer.id)){
+      feedback('scale-feedback','Este voluntário já faz parte da escala do evento. Altere a situação na lista ao lado.',true);return;
+    }
+    const limits=eventCapacity(evt);
+    if(Object.keys(limits).length && !limits[sector]){
+      feedback('scale-feedback','Configure vagas para este setor no cadastro do evento antes de escalar.',true);return;
+    }
+    if(limits[sector] && staffingCount(evt.id,sector)>=limits[sector]){
+      feedback('scale-feedback','As vagas deste setor já estão preenchidas. Escolha outro setor ou ajuste a capacidade do evento.',true);return;
+    }
+    const next={id:'escala-'+Date.now()+'-'+Math.random().toString(36).slice(2),
+      eventId:evt.id,volunteerId:volunteer.id,sector,status:'pendente',attendance:'pendente'};
+    assignments.push(next);
+    if(!saveAssignments()){
+      assignments.pop();
+      feedback('scale-feedback','Não foi possível salvar a escala neste navegador.',true);return;
+    }
+    feedback('scale-feedback',volunteer.name+' foi escalado(a) para '+sector+'. A confirmação fica pendente até a resposta.');
+    renderScales();renderReports();renderParticipations();renderCalendar();renderDay();
+  });
+  el('materials-event').addEventListener('change',renderEventMaterials);
+  el('event-material-form').addEventListener('submit',event=>{
+    event.preventDefault();
+    const evt=selectedEvent('materials-event');
+    const material=stock.find(m=>m.id===el('materials-stock').value);
+    const qty=Number(el('materials-qty').value);
+    if(!evt || !material || !Number.isInteger(qty) || qty<1 || qty>99999){
+      feedback('materials-feedback','Selecione um evento, um material e uma quantidade válida.',true);return;
+    }
+    if(eventMaterials.some(m=>m.eventId===evt.id&&m.stockId===material.id)){
+      feedback('materials-feedback','Esse material já está planejado para este evento.',true);return;
+    }
+    const next={id:'recurso-'+Date.now()+'-'+Math.random().toString(36).slice(2),
+      eventId:evt.id,stockId:material.id,qty,consumed:false};
+    eventMaterials.push(next);
+    if(!saveStore(EVENT_MATERIAL_KEY,eventMaterials)){
+      eventMaterials.pop();
+      feedback('materials-feedback','Não foi possível salvar este material.',true);return;
+    }
+    feedback('materials-feedback','Material vinculado ao evento. O estoque só será reduzido ao registrar o uso.');
+    renderEventMaterials();renderReports();
+  });
 
   el('stock-form').addEventListener('submit', event => {
     event.preventDefault();
@@ -884,7 +1237,9 @@ import { validarLogin, obterStatusDisponibilidade } from './regras.js';
     if (!people.length) return;
     if (typeof confirm === 'function' && !confirm('Apagar todos os cadastros de teste deste navegador?')) return;
     people = [];
+    assignments = [];
     saveStore(PEOPLE_KEY, people);
+    saveStore(ASSIGN_KEY, assignments);
     renderAdmin();
   });
 

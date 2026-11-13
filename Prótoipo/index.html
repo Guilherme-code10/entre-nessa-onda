@@ -20,7 +20,7 @@
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Entre Nessa Onda | Portal de Voluntários">
 <meta name="twitter:image" content="https://guilherme-code10.github.io/entre-nessa-onda/assets/logo-entre-nessa-onda.png">
-<link rel="stylesheet" href="styles.css?v=20261113-multiplos-4">
+<link rel="stylesheet" href="styles.css?v=20261113-escalas-5">
 </head>
 <body>
 <svg aria-hidden="true" style="position:absolute;width:0;height:0;overflow:hidden" xmlns="http://www.w3.org/2000/svg"><defs>
@@ -115,7 +115,7 @@
           <div id="empty-day" class="empty-day" hidden><div class="empty-day-icon">☀</div><h2>Nenhuma atividade nesta data</h2><p id="empty-day-message">Não há uma atividade demonstrativa para este dia.</p><button class="secondary" type="button" id="back-to-event">Ver atividade de 14/11</button></div>
         </div>
       </div>
-      <section id="participations-view" class="participations-view" hidden aria-label="Minhas participações"><div class="participation-icon">♡</div><span class="section-kicker">MINHA JORNADA</span><h2>Minhas participações</h2><p>Esta área resume sua resposta à atividade demonstrativa. Em uma próxima versão, mostrará o histórico real das ações.</p><div id="participation-records" aria-live="polite"><div class="participation-record"><div><strong>Tarde de Brincadeiras</strong><small>14/11/2026 • Recreação</small></div><span class="pill pending" id="participation-status">● Pendente</span></div></div><button class="primary" id="participations-back" type="button">Voltar ao calendário</button></section>
+      <section id="participations-view" class="participations-view" hidden aria-label="Minhas participações"><div class="participation-icon">♡</div><span class="section-kicker">MINHA JORNADA</span><h2>Minhas participações</h2><p id="participations-explainer">Acompanhe suas escalas e confirmações neste navegador de demonstração.</p><div id="participation-records" aria-live="polite"><div class="participation-record"><div><strong>Tarde de Brincadeiras</strong><small>14/11/2026 • Recreação</small></div><span class="pill pending" id="participation-status">● Pendente</span></div></div><button class="primary" id="participations-back" type="button">Voltar ao calendário</button></section>
       <footer class="workspace-footer">Feito para quem faz a diferença. <span>Protótipo acadêmico • sem dados reais</span></footer>
     </main>
     <nav class="bottom-bar" aria-label="Menu mobile"><button class="bottom-item current" id="nav-calendar" type="button"><svg class="icon" aria-hidden="true"><use href="#i-calendar"/></svg>Calendário</button><button class="bottom-item" id="nav-my" type="button"><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg>Participações</button><button class="bottom-item" id="nav-exit" type="button"><svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg>Sair</button></nav>
@@ -149,7 +149,7 @@
  <header class="inner-topbar admin-topbar"><div class="inner-heading"><span class="inner-kicker">PROJETO ENTRE NESSA ONDA • GESTÃO</span><h1>Painel administrativo</h1><p>Eventos, escalas, voluntários e materiais em uma única visão.</p></div><button class="back-to-home" id="admin-back" type="button">Sair da administração</button></header>
  <main class="admin-main">
   <p class="demo-warning"><svg class="tiny-icon" aria-hidden="true"><use href="#i-info"/></svg><span><strong>Administração demonstrativa.</strong> O login desta versão é apenas visual e não substitui autenticação segura no servidor. Não utilize dados pessoais reais ou confidenciais.</span></p>
-  <nav class="admin-navigation" aria-label="Seções do painel administrativo"><button type="button" data-admin-target="admin-events">📅 Eventos</button><button type="button" data-admin-target="admin-messages">💬 Mensagens</button><button type="button" data-admin-target="admin-inventory">📦 Estoque</button><button type="button" data-admin-target="volunteer-admin">👥 Voluntários</button></nav>
+  <nav class="admin-navigation" aria-label="Seções do painel administrativo"><button type="button" data-admin-target="admin-events">📅 Eventos</button><button type="button" data-admin-target="admin-messages">💬 Mensagens</button><button type="button" data-admin-target="admin-scales">📋 Escalas</button><button type="button" data-admin-target="admin-event-materials">🎒 Materiais por ação</button><button type="button" data-admin-target="admin-inventory">📦 Estoque</button><button type="button" data-admin-target="admin-reports">📊 Relatórios</button><button type="button" data-admin-target="volunteer-admin">👥 Voluntários</button></nav>
   <div class="admin-intro"><div><span class="section-kicker">PAINEL DE GESTÃO</span><h2>Visão geral</h2><p>Organize ações comunitárias, materiais e o cadastro de voluntários.</p></div><button class="admin-reset" id="reset-demo-stock" type="button">Restaurar estoque de exemplo</button></div>
   <div class="stats-grid">
    <div class="stat-card"><span>Itens cadastrados</span><strong id="stat-products">0</strong><small>tipos de materiais</small></div>
@@ -157,6 +157,8 @@
    <div class="stat-card"><span>Estoque baixo</span><strong id="stat-low">0</strong><small>itens para repor</small></div>
    <div class="stat-card"><span>Cadastros de teste</span><strong id="stat-volunteers">0</strong><small>somente neste navegador</small></div>
    <div class="stat-card stat-events"><span>Eventos cadastrados</span><strong id="stat-events">0</strong><small>ações de demonstração</small></div>
+   <div class="stat-card"><span>Voluntários escalados</span><strong id="stat-assigned">0</strong><small>escalas ativas no navegador</small></div>
+   <div class="stat-card"><span>Confirmados</span><strong id="stat-confirmed">0</strong><small>participações confirmadas</small></div>
   </div>
 
   <section class="admin-events" id="admin-events" aria-label="Gerenciamento de eventos e ações">
@@ -186,13 +188,66 @@
             <div class="field"><label for="event-role">Função <span>*</span></label><input id="event-role" type="text" maxlength="90" required placeholder="Ex.: Apoio"></div>
           </div>
           <div class="field"><label for="event-description">Descrição da atividade</label><textarea id="event-description" maxlength="500" rows="3" placeholder="O que acontecerá nesta ação?"></textarea></div>
-          <div class="field"><label for="event-slots">Vagas de voluntários (opcional)</label><input id="event-slots" type="number" min="1" max="9999" placeholder="Ex.: 10"></div>
+          <div class="field"><label for="event-slots">Vagas totais (opcional, para setor principal)</label><input id="event-slots" type="number" min="1" max="9999" placeholder="Ex.: 10"></div>
+          <fieldset class="event-capacity-fieldset"><legend>Vagas por setor (opcional)</legend><p>Informe quantos voluntários são necessários em cada equipe. Se preencher um setor, a escala controlará o limite de vagas para ele.</p>
+            <div class="capacity-input-grid">
+              <label>Recreação <input id="cap-recreation" data-cap-sector="Recreação" type="number" min="0" max="999" placeholder="0"></label>
+              <label>Acolhimento <input id="cap-welcome" data-cap-sector="Acolhimento" type="number" min="0" max="999" placeholder="0"></label>
+              <label>Organização <input id="cap-organizing" data-cap-sector="Organização" type="number" min="0" max="999" placeholder="0"></label>
+              <label>Materiais <input id="cap-materials" data-cap-sector="Materiais" type="number" min="0" max="999" placeholder="0"></label>
+              <label>Apoio geral <input id="cap-support" data-cap-sector="Apoio geral" type="number" min="0" max="999" placeholder="0"></label>
+            </div>
+          </fieldset>
           <button id="event-submit" class="primary" type="submit">Cadastrar evento</button>
           <button id="event-cancel-edit" class="admin-mini-btn event-cancel" type="button" hidden>Cancelar edição</button>
           <p id="event-feedback" class="form-feedback" role="status" aria-live="polite" hidden></p>
         </form>
       </section>
     </div>
+  </section>
+  <section class="operations-section" id="admin-scales" aria-label="Escalas e presenças dos voluntários">
+    <div class="operations-heading"><span class="section-kicker">PLANEJAMENTO MENSAL</span><h2>Escalas e presenças</h2><p>Defina quem ajuda em cada evento, acompanhe as confirmações e registre o comparecimento no dia da ação.</p></div>
+    <div class="operations-grid">
+      <div class="admin-panel operations-card">
+        <h3>Organizar escala</h3>
+        <div class="field"><label for="scale-event">Evento</label><select id="scale-event"></select></div>
+        <div class="sector-occupancy" id="sector-progress-list" aria-live="polite"></div>
+        <form id="scale-form" class="beautiful-form" autocomplete="off">
+          <div class="field"><label for="scale-volunteer">Voluntário cadastrado</label><select id="scale-volunteer" required></select></div>
+          <div class="field"><label for="scale-sector">Setor de atuação</label><select id="scale-sector" required><option>Recreação</option><option>Acolhimento</option><option>Organização</option><option>Materiais</option><option>Apoio geral</option></select></div>
+          <button class="primary" type="submit">+ Adicionar à escala</button>
+          <p id="scale-feedback" class="form-feedback" role="status" aria-live="polite" hidden></p>
+        </form>
+      </div>
+      <div class="admin-panel operations-card">
+        <div class="admin-panel-heading"><div><h3>Equipe escalada</h3><p>Confirme disponibilidade e registre presença ou ausência após a ação.</p></div></div>
+        <div id="assignment-list" class="assignment-list" aria-live="polite"></div>
+      </div>
+    </div>
+  </section>
+  <section class="operations-section" id="admin-event-materials" aria-label="Materiais planejados para cada evento">
+    <div class="operations-heading"><span class="section-kicker">PLANEJAMENTO DE RECURSOS</span><h2>Materiais por ação</h2><p>Associe itens do estoque ao evento e dê baixa quando forem realmente utilizados.</p></div>
+    <div class="admin-panel operations-card">
+      <form id="event-material-form" class="material-plan-form" autocomplete="off">
+        <div class="field"><label for="materials-event">Evento</label><select id="materials-event" required></select></div>
+        <div class="field"><label for="materials-stock">Material</label><select id="materials-stock" required></select></div>
+        <div class="field"><label for="materials-qty">Quantidade planejada</label><input id="materials-qty" type="number" required min="1" max="99999" value="1"></div>
+        <button class="primary" type="submit">+ Vincular ao evento</button>
+      </form>
+      <p id="materials-feedback" class="form-feedback" role="status" aria-live="polite" hidden></p>
+      <div id="event-material-list" class="planned-materials" aria-live="polite"></div>
+    </div>
+  </section>
+  <section class="operations-section" id="admin-reports" aria-label="Indicadores demonstrativos">
+    <div class="operations-heading"><span class="section-kicker">RESULTADOS DO PROJETO</span><h2>Relatórios de participação</h2><p>Indicadores calculados com os lançamentos desta demonstração. Não são números reais do projeto.</p></div>
+    <div class="report-kpis">
+      <div><span>Eventos cadastrados</span><strong id="report-events">0</strong></div>
+      <div><span>Confirmações</span><strong id="report-confirmed">0</strong></div>
+      <div><span>Presenças registradas</span><strong id="report-attended">0</strong></div>
+      <div><span>Horas de voluntariado</span><strong id="report-hours">0h</strong></div>
+      <div><span>Unidades de materiais utilizadas</span><strong id="report-materials">0</strong></div>
+    </div>
+    <div id="report-event-list" class="report-event-list" aria-live="polite"></div>
   </section>
   <div class="admin-grid" id="admin-inventory">
    <section class="admin-panel" aria-label="Lista de materiais"><div class="admin-panel-heading"><div><h3>Estoque de materiais</h3><p>Utilize + e − para simular a entrada e saída de unidades.</p></div><span class="admin-panel-chip">EXEMPLO</span></div><div id="inventory-list" class="inventory-list" aria-live="polite"></div></section>
@@ -242,5 +297,5 @@
   <div class="notice"><svg class="icon" aria-hidden="true"><use href="#i-info"/></svg><span><strong>Importante:</strong> confirmar disponibilidade não registra presença. O comparecimento será anotado pelo líder durante a ação.</span></div>
  </div><div class="next-actions"><button class="primary" id="btn-back-calendar" type="button">Voltar ao calendário <svg class="tiny-icon" aria-hidden="true"><use href="#i-arrow"/></svg></button><button class="secondary" id="btn-view-scales" type="button">Ver minhas escalas</button></div><p class="muted-foot">Protótipo demonstrativo: o resultado não é gravado em banco de dados.</p></main>
 </section>
-<script type="module" src="app.js?v=20261113-multiplos-4"></script>
+<script type="module" src="app.js?v=20261113-escalas-5"></script>
 </body></html>
