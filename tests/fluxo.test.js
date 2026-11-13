@@ -130,7 +130,7 @@ describe('Integracao - Entre Nessa Onda', () => {
     expect(newlyAdded).toBeTruthy();
     newlyAdded.querySelector('button').click();
 
-    expect(el('calendar-month-title').textContent).toContain('Dezembro 2026');
+    expect(el('calendar-month-title').textContent).toContain('Dezembro de 2026');
     expect(el('extra-events').textContent).toContain('Oficina de Leitura');
     expect(el('calendar-view').hidden).toBe(false);
   });
@@ -156,10 +156,10 @@ describe('Integracao - Entre Nessa Onda', () => {
     enviarLogin('voluntario@exemplo.org', '123456');
     el('next-month').click();
 
-    expect(el('calendar-month-title').textContent).toContain('Dezembro 2026');
+    expect(el('calendar-month-title').textContent).toContain('Dezembro de 2026');
     expect(el('calendar-day-grid').querySelectorAll('.day').length).toBe(31);
     el('prev-month').click();
-    expect(el('calendar-month-title').textContent).toContain('Novembro 2026');
+    expect(el('calendar-month-title').textContent).toContain('Novembro de 2026');
   });
 
   it('permite editar um evento existente no painel', () => {
