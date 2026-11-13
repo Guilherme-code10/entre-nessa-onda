@@ -37,6 +37,8 @@ import { validarLogin, obterStatusDisponibilidade } from './regras.js';
   let status = 'pendente';
   let loginRole = 'volunteer';
   let currentRole = null;
+  const batchSelected = new Set();
+  const batchOpened = new Set();
   let viewYear = 2026, viewMonth = 10, selectedDate = '2026-11-14';
 
   function readStore(key, fallback) {
@@ -382,6 +384,73 @@ import { validarLogin, obterStatusDisponibilidade } from './regras.js';
     return 'Olá, '+firstName+'! 💙 Aqui é a equipe do Projeto Entre Nessa Onda. Gostaríamos de convidar você para a ação "'+event.title+'", que acontece '+when+', em '+event.place+'. Você gostaria de participar? 🌊';
   }
 
+  function eligibleVolunteers(){
+    return people.filter(p => p.whatsappConsent === true && whatsappPhone(p.phone));
+  }
+
+  function renderBatchRecipientChoices(){
+    const allowed=eligibleVolunteers();
+    const permitted=new Set(allowed.map(p=>p.id));
+    for(const id of batchSelected) if(!permitted.has(id))batchSelected.delete(id);
+    const list=el('multi-recipient-list');
+    list.replaceChildren();
+    for(const person of allowed){
+      const label=create('label','multi-recipient-option');
+      const checkbox=create('input');
+      checkbox.type='checkbox';
+      checkbox.value=person.id;
+      checkbox.checked=batchSelected.has(person.id);
+      checkbox.setAttribute('aria-label','Selecionar '+person.name+' para preparar mensagem');
+      checkbox.addEventListener('change',()=>{
+        if(checkbox.checked)batchSelected.add(person.id);
+        else {batchSelected.delete(person.id);batchOpened.delete(person.id);}
+        renderBatchWhatsAppLinks();
+      });
+      const info=create('span');
+      info.append(create('strong','',person.name),create('small','',person.area||'Voluntário'));
+      label.append(checkbox,info);
+      list.append(label);
+    }
+    if(!allowed.length)list.append(create('p','multi-recipient-empty','Nenhum voluntário tem número válido com autorização para receber mensagens. Cadastre um contato de teste com consentimento.'));
+    renderBatchWhatsAppLinks();
+  }
+
+  function renderBatchWhatsAppLinks(){
+    const list=el('batch-whatsapp-rows');
+    list.replaceChildren();
+    const selected=eligibleVolunteers().filter(p=>batchSelected.has(p.id));
+    const message=el('message-preview').value.trim();
+    const active=el('message-multi-mode').checked;
+    el('multi-selected-count').textContent=selected.length+(selected.length===1?' voluntário selecionado':' voluntários selecionados');
+    for(const person of selected){
+      const row=create('div','batch-person-row');
+      const info=create('div','batch-person-info');
+      info.append(create('strong','',person.name),create('small','',person.area||'Voluntário'));
+      const actions=create('div','batch-person-actions');
+      const state=create('span','batch-person-opened',batchOpened.has(person.id)?'Conversa aberta (envio não confirmado)':'Ainda não aberta');
+      const link=create('a','','Abrir conversa no WhatsApp ↗');
+      const firstName=String(person.name).trim().split(/\s+/)[0];
+      const individual=message.replaceAll('{nome}',firstName);
+      link.href='https://wa.me/'+whatsappPhone(person.phone)+'?text='+encodeURIComponent(individual);
+      link.target='_blank';
+      link.rel='noopener noreferrer';
+      link.setAttribute('aria-label','Abrir conversa individual com '+person.name+'; envio manual');
+      link.addEventListener('click',()=>{
+        batchOpened.add(person.id);
+        state.textContent='Conversa aberta (envio não confirmado)';
+      });
+      if(!message){link.removeAttribute('href');link.setAttribute('aria-disabled','true');}
+      actions.append(state,link);
+      row.append(info,actions);
+      list.append(row);
+    }
+    el('message-send-hint').textContent=active
+      ? !selected.length?'Marque os voluntários autorizados na lista acima.'
+        : !message?'Escolha um evento válido ou escreva uma mensagem.'
+        : 'Abra uma conversa de cada vez. Nenhuma mensagem é enviada pelo portal.'
+      : el('message-send-hint').textContent;
+  }
+
   function renderMessageRecipients() {
     const select=el('message-recipient');
     const previous=select.value;
@@ -389,31 +458,49 @@ import { validarLogin, obterStatusDisponibilidade } from './regras.js';
     const placeholder=create('option','', 'Selecione um voluntário autorizado');
     placeholder.value='';
     select.append(placeholder);
-    people.filter(p=>p.whatsappConsent===true && whatsappPhone(p.phone)).forEach(person=>{
+    eligibleVolunteers().forEach(person=>{
       const option=create('option','',person.name+' • '+person.phone);
       option.value=person.id;
       select.append(option);
     });
-    select.value=people.some(p=>p.id===previous && p.whatsappConsent===true && whatsappPhone(p.phone))?previous:'';
+    select.value=eligibleVolunteers().some(p=>p.id===previous)?previous:'';
+    renderBatchRecipientChoices();
     refreshMessageComposer();
   }
 
   function refreshMessageComposer() {
-    const person=people.find(p=>p.id===el('message-recipient').value
-      && p.whatsappConsent===true && whatsappPhone(p.phone));
+    const multi=el('message-multi-mode').checked;
+    el('single-message-recipient').hidden=multi;
+    el('multi-message-recipients').hidden=!multi;
+    el('send-whatsapp').hidden=multi;
+    el('batch-whatsapp-list').hidden=!multi;
+    el('message-preview-label').textContent=multi
+      ? 'Modelo de mensagem (use {nome} para personalizar)'
+      : 'Mensagem pronta (você pode editar)';
     const preview=el('message-preview');
-    preview.value=person?(volunteerMessage(person)||''):'';
-    preview.disabled=!person;
-    preview.placeholder=person
-      ? 'Cadastre um evento ou escolha "Mensagem geral" para criar o texto.'
-      : 'Selecione um voluntário autorizado para gerar a mensagem.';
+    if(multi){
+      preview.disabled=false;
+      preview.value=volunteerMessage({name:'{nome}'})||'';
+      preview.placeholder='Escreva uma mensagem. Use {nome} para chamar cada voluntário pelo primeiro nome.';
+    }else{
+      const person=eligibleVolunteers().find(p=>p.id===el('message-recipient').value);
+      preview.value=person?(volunteerMessage(person)||''):'';
+      preview.disabled=!person;
+      preview.placeholder=person
+        ? 'Cadastre um evento ou escolha "Mensagem geral" para criar o texto.'
+        : 'Selecione um voluntário autorizado para gerar a mensagem.';
+    }
     updateMessageLink();
   }
 
   function updateMessageLink() {
+    if(el('message-multi-mode').checked){
+      renderBatchWhatsAppLinks();
+      return;
+    }
     const button=el('send-whatsapp');
     const hint=el('message-send-hint');
-    const person=people.find(p=>p.id===el('message-recipient').value && p.whatsappConsent===true);
+    const person=eligibleVolunteers().find(p=>p.id===el('message-recipient').value);
     const phone=person?whatsappPhone(person.phone):null;
     const message=el('message-preview').value.trim();
     const ready=Boolean(phone && message);
@@ -455,6 +542,7 @@ import { validarLogin, obterStatusDisponibilidade } from './regras.js';
         const choose=create('button','prepare-message','Preparar mensagem');
         choose.type='button';
         choose.addEventListener('click',()=>{
+          el('message-multi-mode').checked=false;
           el('message-recipient').value=person.id;
           refreshMessageComposer();
           el('admin-messages').scrollIntoView?.({behavior:'smooth',block:'start'});
@@ -472,6 +560,7 @@ import { validarLogin, obterStatusDisponibilidade } from './regras.js';
           person.whatsappConsent=false;
           saveStore(PEOPLE_KEY,people);
           renderPeople();
+          renderMessageRecipients();
         });
         actions.append(optOut);
       }
@@ -654,11 +743,25 @@ import { validarLogin, obterStatusDisponibilidade } from './regras.js';
 
   ['message-kind','message-event'].forEach(id => el(id).addEventListener('change',()=>{
     el('message-event').disabled=el('message-kind').value==='general';
+    batchOpened.clear();
     renderPeople();
     refreshMessageComposer();
   }));
   el('message-recipient').addEventListener('change',()=>refreshMessageComposer());
-  el('message-preview').addEventListener('input',updateMessageLink);
+  el('message-multi-mode').addEventListener('change',()=>refreshMessageComposer());
+  el('multi-select-all').addEventListener('click',()=>{
+    eligibleVolunteers().forEach(p=>batchSelected.add(p.id));
+    renderBatchRecipientChoices();
+  });
+  el('multi-clear-all').addEventListener('click',()=>{
+    batchSelected.clear();
+    batchOpened.clear();
+    renderBatchRecipientChoices();
+  });
+  el('message-preview').addEventListener('input',()=>{
+    batchOpened.clear();
+    updateMessageLink();
+  });
   el('send-whatsapp').addEventListener('click',event=>{
     if(el('send-whatsapp').getAttribute('aria-disabled')==='true') event.preventDefault();
   });
