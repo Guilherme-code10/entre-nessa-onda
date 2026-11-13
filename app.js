@@ -64,6 +64,10 @@ import { validarLogin, obterStatusDisponibilidade } from './regras.js';
   }
 
   function go(screen) {
+    // O formulario de cadastro pertence exclusivamente ao fluxo publico, antes do login.
+    if(screen==='cadastro' && currentRole){
+      screen=currentRole==='admin'?'admin':'escala';
+    }
     if (screen === 'admin' && currentRole !== 'admin') {
       screen = 'admin-login';
     }
@@ -1018,9 +1022,8 @@ import { validarLogin, obterStatusDisponibilidade } from './regras.js';
     el(id).addEventListener('click', () => view('calendar')));
   ['nav-exit', 'side-logout', 'admin-back'].forEach(id =>
     el(id).addEventListener('click', logout));
-  el('register-back').addEventListener('click',()=>go(currentRole==='admin'?'admin':'login'));
-  ['go-register', 'side-register', 'admin-new-volunteer'].forEach(id =>
-    el(id).addEventListener('click', () => go('cadastro')));
+  el('register-back').addEventListener('click',()=>go('login'));
+  el('go-register').addEventListener('click', () => go('cadastro'));
   el('go-admin').addEventListener('click', () => go(currentRole==='admin'?'admin':'admin-login'));
   el('prev-month').addEventListener('click',()=>navigateMonth(-1));
   el('next-month').addEventListener('click',()=>navigateMonth(1));
