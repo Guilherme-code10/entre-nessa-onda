@@ -200,6 +200,7 @@ import { validarLogin, obterStatusDisponibilidade } from './regras.js';
   }
 
   function renderDay() {
+    el('availability-warning').hidden=true;
     const dayEvents = events.filter(e=>e.date===selectedDate && (!activeVolunteerId || assignments.some(a=>a.eventId===e.id&&a.volunteerId===activeVolunteerId)))
       .sort((a,b)=>(a.start||'').localeCompare(b.start||''));
     const demo=dayEvents.find(e=>e.id===DEMO_EVENT_ID);
@@ -269,6 +270,17 @@ import { validarLogin, obterStatusDisponibilidade } from './regras.js';
     if(!event)return;
     status=obterStatusDisponibilidade(confirmed);
     const assigned=activeVolunteerId && assignments.find(a=>a.eventId===event.id&&a.volunteerId===activeVolunteerId);
+    const warning=el('availability-warning');
+    warning.hidden=true;
+    if(confirmed && assigned && assigned.status==='recusada'){
+      const capacity=eventCapacity(event);
+      const limit=capacity[assigned.sector];
+      if(Object.keys(capacity).length && (!limit || staffingCount(event.id,assigned.sector)>=limit)){
+        warning.textContent='Não foi possível reconfirmar: as vagas deste setor estão preenchidas. Fale com a coordenação para verificar uma nova vaga.';
+        warning.hidden=false;
+        return;
+      }
+    }
     if(assigned){
       assigned.status=status;
       assigned.attendance='pendente';
@@ -1124,6 +1136,17 @@ import { validarLogin, obterStatusDisponibilidade } from './regras.js';
       feedback('event-feedback','Revise as vagas de cada setor: use números inteiros entre 0 e 999.',true);return;
     }
     if(!Object.keys(slotsBySector).length && slots)slotsBySector[sector]=slots;
+    if(id && Object.keys(slotsBySector).length){
+      const activeAssigned=assignments.filter(a=>a.eventId===id && a.status!=='recusada');
+      for(const name of SECTORS){
+        const count=activeAssigned.filter(a=>a.sector===name).length;
+        const limit=slotsBySector[name] || 0;
+        if(count && limit < count){
+          feedback('event-feedback','Não é possível reduzir as vagas de '+name+': existem '+count+' voluntários escalados neste setor. Reorganize a escala antes de salvar.',true);
+          return;
+        }
+      }
+    }
     const item={id: id || 'event-'+Date.now()+'-'+Math.random().toString(36).slice(2),
       title,date,start,end,place,sector,role,description,slots,slotsBySector};
     const next=id?events.map(e=>e.id===id?item:e):[...events,item];

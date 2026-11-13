@@ -436,3 +436,7 @@ html{background:#eaf4fc;color:var(--dark)}body{margin:0;padding:0!important;back
 @media(max-width:1080px){.operations-grid{grid-template-columns:1fr}.report-kpis{grid-template-columns:repeat(3,minmax(0,1fr))}}
 @media(max-width:760px){.material-plan-form{grid-template-columns:repeat(2,minmax(0,1fr))}.material-plan-form button{grid-column:1/-1}.report-kpis{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:520px){.capacity-input-grid{grid-template-columns:1fr 1fr;gap:8px}.material-plan-form{grid-template-columns:1fr}.material-plan-form button{grid-column:1}.report-kpis{grid-template-columns:1fr 1fr}.report-kpis strong{font-size:24px}.operations-card{padding:15px!important}}
+
+/* Regra de vagas: aviso ao voluntario quando uma recusa liberou a ultima vaga */
+.availability-warning{padding:13px 16px;margin:0 0 15px;border-radius:11px;border:1px solid #e7c17b;background:#fff8e5;color:#7b5000;font-size:13px;font-weight:750;line-height:1.5}
+.availability-warning[hidden]{display:none}
