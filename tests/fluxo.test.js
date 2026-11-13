@@ -82,4 +82,30 @@ describe('Integracao - Entre Nessa Onda', () => {
     expect(el('screen-escala').classList.contains('active')).toBe(true);
     expect(el('escala-status').textContent).toContain('Recusada');
   });
+  it('inicia com o campo de e-mail vazio', () => {
+    expect(el('email').value).toBe('');
+    expect(el('password').value).toBe('');
+  });
+
+  it('abre o cadastro demonstrativo de voluntarios', () => {
+    el('go-register').click();
+
+    expect(el('screen-cadastro').classList.contains('active')).toBe(true);
+    expect(el('volunteer-form')).toBeTruthy();
+  });
+
+  it('abre o painel admin com estoque demonstrativo', () => {
+    el('go-admin').click();
+
+    expect(el('screen-admin').classList.contains('active')).toBe(true);
+    expect(el('inventory-list').children.length).toBeGreaterThan(0);
+  });
+
+  it('mantem o calendario acessivel ao entrar nas escalas', () => {
+    enviarLogin('voluntario@exemplo.org', 'senha-de-teste');
+
+    expect(el('calendar-view').hidden).toBe(false);
+    expect(el('calendar-view').querySelectorAll('.day').length).toBe(30);
+  });
+
 });
