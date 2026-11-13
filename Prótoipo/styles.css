@@ -213,3 +213,18 @@ html{background:#eaf4fc;color:var(--dark)}body{margin:0;padding:0!important;back
 .admin-bottom-note{margin:23px 0 0;color:#6a839b;font-size:12px;line-height:1.6;text-align:center}
 @media(max-width:900px){#screen-escala .calendar-layout>.calendar-card,#screen-escala .calendar-layout>.activity-column{grid-column:auto!important;grid-row:auto!important}.stats-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.admin-grid{grid-template-columns:1fr}}
 @media(max-width:720px){#screen-escala .calendar-layout>.calendar-card,#screen-escala .calendar-layout>.activity-column{grid-column:1!important;grid-row:auto!important}.inner-topbar{flex-direction:column;padding:26px 20px}.back-to-home{align-self:flex-start}.form-grid{grid-template-columns:1fr}.stats-grid{gap:10px}.stat-card{padding:14px}.stat-card strong{font-size:28px}.admin-intro{align-items:flex-start;flex-direction:column}.admin-panel-heading{flex-direction:column}.inventory-row{grid-template-columns:1fr auto}.stock-stepper{grid-column:1 / -1;justify-content:flex-end}.volunteer-row{align-items:flex-start}.beautiful-form{padding:20px}.form-page-intro h2{font-size:23px}}
+
+/* Marca oficial (imagem recortada da captura do perfil enviada pelo usuário) */
+.brand-lockup .official-logo{display:block;flex-shrink:0;width:84px;height:84px;object-fit:contain;filter:drop-shadow(0 7px 15px rgba(0,13,44,.17))}
+#screen-login .brand-header .brand-lockup{align-items:center;gap:19px}
+#screen-login .brand-header .official-logo{width:94px;height:94px}
+#screen-login .brand-header .brand-name{font-size:25px}
+#screen-login .brand-header .brand-kicker{font-size:11px;letter-spacing:1.2px}
+#screen-resultado .brand-lockup .result-logo{height:55px;width:55px}
+.sidebar-brand .sidebar-logo{height:138px;width:138px;object-fit:contain;filter:drop-shadow(0 8px 15px rgba(2,14,54,.28))}
+@media(max-width:520px){
+#screen-login .brand-header .brand-lockup{gap:12px}
+#screen-login .brand-header .official-logo{width:72px;height:72px}
+#screen-login .brand-header .brand-name{font-size:18px}
+#screen-login .brand-header .brand-kicker{font-size:9px}
+}
