@@ -130,10 +130,11 @@
    <div class="form-grid">
     <div class="field"><label for="reg-name">Nome completo <span aria-hidden="true">*</span></label><input id="reg-name" name="name" type="text" placeholder="Nome de exemplo" minlength="3" maxlength="100" required autocomplete="off"/></div>
     <div class="field"><label for="reg-email">E-mail <span aria-hidden="true">*</span></label><input id="reg-email" name="email" type="email" placeholder="exemplo@email.com" maxlength="120" required autocomplete="off"/></div>
-    <div class="field"><label for="reg-phone">Telefone (opcional)</label><input id="reg-phone" name="phone" type="tel" placeholder="(00) 00000-0000" maxlength="24" autocomplete="off"/></div>
+    <div class="field"><label for="reg-phone">Celular / WhatsApp (opcional)</label><input id="reg-phone" name="phone" type="tel" inputmode="tel" placeholder="Ex.: (11) 99999-9999" maxlength="24" autocomplete="off" aria-describedby="phone-help"/><small id="phone-help" class="field-help">Informe DDD + número. Para receber avisos, marque a autorização abaixo.</small></div>
     <div class="field"><label for="reg-area">Como gostaria de ajudar? <span aria-hidden="true">*</span></label><select id="reg-area" name="area" required><option value="">Selecione uma área</option><option value="Recreação">Recreação e brincadeiras</option><option value="Acolhimento">Acolhimento</option><option value="Organização">Organização e logística</option><option value="Materiais">Materiais e estoque</option><option value="Apoio geral">Apoio geral</option></select></div>
    </div>
    <label class="consent-label"><input type="checkbox" id="reg-consent" required/><span>Entendi que este cadastro é apenas uma simulação local e não equivale à inscrição oficial no projeto.</span></label>
+   <label class="consent-label contact-consent"><input type="checkbox" id="reg-whatsapp-consent"/><span><strong>Autorizo receber mensagens pelo WhatsApp</strong> sobre eventos, escalas e ações do Entre Nessa Onda. Esta opção é voluntária e exige informar um celular válido. Na versão de demonstração, nenhuma mensagem será enviada pelo sistema.</span></label>
    <button type="submit" class="primary form-submit">Salvar cadastro de teste <svg class="tiny-icon" aria-hidden="true"><use href="#i-check"/></svg></button>
    <p id="register-feedback" class="form-feedback" role="status" aria-live="polite" hidden></p>
   </form>
@@ -202,7 +203,15 @@
     </form>
    </section>
   </div>
-  <section class="admin-panel volunteer-admin" aria-label="Cadastros de voluntários"><div class="admin-panel-heading"><div><h3>Cadastros de voluntários</h3><p>Somente os cadastros demonstrativos criados neste navegador aparecerão aqui.</p></div><div class="volunteer-actions"><button id="admin-new-volunteer" class="admin-mini-btn" type="button">+ Novo cadastro</button><button id="clear-demo-people" class="admin-mini-btn danger" type="button">Apagar cadastros locais</button></div></div><div id="volunteer-list" class="volunteer-list"></div></section>
+  <section class="admin-panel volunteer-admin" aria-label="Cadastros e mensagens para voluntários"><div class="admin-panel-heading"><div><h3>Voluntários e contato por WhatsApp</h3><p>Contatos de teste salvos neste navegador. O envio de mensagens exige autorização e confirmação manual no WhatsApp.</p></div><div class="volunteer-actions"><button id="admin-new-volunteer" class="admin-mini-btn" type="button">+ Novo cadastro</button><button id="clear-demo-people" class="admin-mini-btn danger" type="button">Apagar cadastros locais</button></div></div><div class="volunteer-message-panel" aria-label="Preparar mensagem individual">
+    <div class="message-panel-heading"><span class="message-panel-icon" aria-hidden="true">💬</span><div><strong>Preparar mensagem</strong><p>Escolha o tipo de aviso e, se necessário, o evento. Depois use o WhatsApp na ficha do voluntário.</p></div></div>
+    <div class="message-filters">
+      <div class="field"><label for="message-kind">Tipo de mensagem</label><select id="message-kind"><option value="invite">Convite para evento</option><option value="reminder">Lembrete de evento</option><option value="general">Mensagem geral</option></select></div>
+      <div class="field"><label for="message-event">Evento</label><select id="message-event"></select></div>
+    </div>
+    <p class="message-disclaimer">O botão apenas abre o WhatsApp com uma mensagem sugerida. <strong>Você revisa e envia manualmente.</strong> Cadastros sem autorização não poderão receber mensagens pelo botão.</p>
+  </div>
+  <div id="volunteer-list" class="volunteer-list"></div></section>
   <p class="admin-bottom-note">Para compartilhar eventos, escalas, estoque e cadastros entre dispositivos, precisaremos conectar um banco de dados e autenticação administrativa.</p>
  </main>
 </section>

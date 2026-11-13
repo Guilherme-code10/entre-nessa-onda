@@ -271,3 +271,30 @@ html{background:#eaf4fc;color:var(--dark)}body{margin:0;padding:0!important;back
 .calendar-card .day{position:relative}
 @media(max-width:1020px){.events-grid{grid-template-columns:1fr}.admin-events-heading{align-items:start;flex-direction:column}}
 @media(max-width:520px){.admin-event-row{grid-template-columns:55px minmax(0,1fr);gap:10px;padding:12px}.extra-event-info{grid-template-columns:1fr}.extra-event-header h2{font-size:19px}.admin-events-heading h2{font-size:25px}}
+
+/* Comunicação individual opcional com voluntários — consentimento e WhatsApp */
+.field-help{display:block;color:#6c829b;font-size:11px;line-height:1.55;margin:7px 0 0}
+.contact-consent{margin-top:13px;border:1px solid #cfe9fa;border-radius:13px;background:#f2faff;padding:13px 15px}
+.contact-consent strong{color:#0d518e}
+.volunteer-message-panel{border:1px solid #cce5fa;border-radius:16px;background:linear-gradient(110deg,#f1f9ff,#eaf8fc);padding:18px;margin:0 0 20px}
+.message-panel-heading{display:flex;align-items:flex-start;gap:11px;margin-bottom:15px}
+.message-panel-icon{width:39px;height:39px;flex-shrink:0;border-radius:12px;background:#dbf6e9;display:grid;place-items:center;font-size:19px}
+.message-panel-heading strong{display:block;color:#153e69;font-size:15px;margin-bottom:5px}
+.message-panel-heading p{font-size:12px;color:#567895;line-height:1.55;margin:0}
+.message-filters{display:grid;grid-template-columns:minmax(0,.85fr) minmax(0,1.15fr);gap:14px}
+.message-filters .field{margin-bottom:0}
+.message-filters .field label{display:block;color:#315d82;font-size:11px;font-weight:900;margin:0 0 7px}
+.message-filters select{height:43px;border:1px solid #bed9ef;border-radius:10px;background:#fff;color:#0d3d65;padding:0 10px;width:100%;font-family:inherit;font-weight:700;font-size:12px}
+.message-filters select:disabled{color:#7d94a9;background:#eff5fa}
+.message-disclaimer{font-size:11px;line-height:1.6;color:#4c728f;margin:14px 0 0}
+.volunteer-row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:15px}
+.volunteer-contact{display:grid;gap:5px;min-width:0}
+.volunteer-contact small{overflow-wrap:anywhere}
+.volunteer-consent-status{font-size:11px;line-height:1.4;color:#7a8795}
+.volunteer-consent-status.approved{color:#16764d}
+.volunteer-row-actions{display:flex;align-items:center;flex-wrap:wrap;gap:8px;justify-content:flex-end}
+.volunteer-row .whatsapp-link{display:inline-flex;align-items:center;justify-content:center;text-decoration:none;border-radius:9px;padding:9px 13px;background:#e2f8eb;border:1px solid #a6dfbd;color:#137046;font-size:11px;font-weight:900;min-height:36px}
+.volunteer-row .whatsapp-link:hover{background:#d1f1df}
+.volunteer-row .whatsapp-disabled{display:inline-block;color:#7f94a5;background:#f2f5f9;border:1px solid #dee8ef;border-radius:9px;padding:9px 11px;font-size:11px}
+.volunteer-row button{min-height:36px}
+@media(max-width:700px){.message-filters{grid-template-columns:1fr}.volunteer-row{grid-template-columns:1fr}.volunteer-row-actions{justify-content:flex-start}.volunteer-message-panel{padding:15px}}

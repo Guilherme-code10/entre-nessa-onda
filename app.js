@@ -335,25 +335,95 @@ import { validarLogin, obterStatusDisponibilidade } from './regras.js';
     renderInventory();
   }
 
+  function whatsappPhone(raw) {
+    const digits = String(raw || '').replace(/\D/g,'');
+    const national = digits.length === 13 && digits.startsWith('55') ? digits.slice(2) : digits;
+    return /^[1-9]\d9\d{8}$/.test(national) ? '55' + national : null;
+  }
+
+  function renderMessageOptions() {
+    const select = el('message-event');
+    const old = select.value;
+    select.replaceChildren();
+    const sorted = [...events].sort((a,b)=>a.date.localeCompare(b.date) || a.start.localeCompare(b.start));
+    sorted.forEach(event => {
+      const option=create('option','',event.title+' • '+formatDate(event.date));
+      option.value=event.id;
+      select.append(option);
+    });
+    if (sorted.some(x=>x.id===old)) select.value=old;
+    el('message-event').disabled=el('message-kind').value==='general';
+  }
+
+  function volunteerMessage(person) {
+    const firstName=String(person.name || 'voluntário').trim().split(/\s+/)[0];
+    const kind=el('message-kind').value;
+    if(kind==='general'){
+      return 'Olá, '+firstName+'! 💙 Aqui é a equipe do Projeto Entre Nessa Onda. Gostaríamos de conversar com você sobre nossas próximas ações sociais. Podemos falar? 🌊';
+    }
+    const event=events.find(e=>e.id===el('message-event').value);
+    if(!event)return null;
+    const fullDate=formatDate(event.date,{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+    const when=fullDate+', das '+event.start+' às '+event.end;
+    if(kind==='reminder'){
+      return 'Olá, '+firstName+'! 💙 Passando para lembrar da ação "'+event.title+'", que acontece '+when+', em '+event.place+'. Confirme sua disponibilidade com nossa equipe! 🌊 Projeto Entre Nessa Onda.';
+    }
+    return 'Olá, '+firstName+'! 💙 Aqui é a equipe do Projeto Entre Nessa Onda. Gostaríamos de convidar você para a ação "'+event.title+'", que acontece '+when+', em '+event.place+'. Você gostaria de participar? 🌊';
+  }
+
   function renderPeople() {
-    const list = el('volunteer-list');
+    const list=el('volunteer-list');
     list.replaceChildren();
     people.forEach(person => {
-      const row = create('div', 'volunteer-row');
-      const detail = create('div');
-      detail.append(create('strong', '', person.name), create('small', '', (person.area || 'Apoio geral') + ' • ' + person.email));
-      const remove = create('button', '', 'Excluir');
-      remove.type = 'button'; remove.setAttribute('aria-label', 'Excluir cadastro de teste de ' + person.name);
-      remove.addEventListener('click', () => {
-        people = people.filter(x => x.id !== person.id);
-        saveStore(PEOPLE_KEY, people);
+      const row=create('div','volunteer-row');
+      const detail=create('div','volunteer-contact');
+      detail.append(
+        create('strong','',person.name),
+        create('small','',((person.area||'Apoio geral')+' • '+person.email))
+      );
+      if(person.phone) detail.append(create('small','', '📱 '+person.phone));
+      const phone=whatsappPhone(person.phone);
+      const consent=person.whatsappConsent===true;
+      detail.append(create('span','volunteer-consent-status'+(consent&&phone?' approved':''), consent&&phone
+        ? '✓ Autorizou contato pelo WhatsApp (demonstração)'
+        : 'Sem autorização para mensagens pelo WhatsApp'));
+      const actions=create('div','volunteer-row-actions');
+      const msg=consent&&phone?volunteerMessage(person):null;
+      if(msg) {
+        const link=create('a','whatsapp-link','Abrir WhatsApp ↗');
+        link.href='https://wa.me/'+phone+'?text='+encodeURIComponent(msg);
+        link.target='_blank';
+        link.rel='noopener noreferrer';
+        link.setAttribute('aria-label','Abrir WhatsApp para '+person.name+' com mensagem pronta, sem enviar automaticamente');
+        actions.append(link);
+      } else {
+        actions.append(create('span','whatsapp-disabled',consent&&phone?'Cadastre um evento':'WhatsApp indisponível'));
+      }
+      if(consent){
+        const optOut=create('button','','Revogar autorização');
+        optOut.type='button';
+        optOut.setAttribute('aria-label','Revogar autorização de contato de '+person.name);
+        optOut.addEventListener('click',()=>{
+          person.whatsappConsent=false;
+          saveStore(PEOPLE_KEY,people);
+          renderPeople();
+        });
+        actions.append(optOut);
+      }
+      const remove=create('button','','Excluir');
+      remove.type='button';
+      remove.setAttribute('aria-label','Excluir cadastro de teste de '+person.name);
+      remove.addEventListener('click',()=>{
+        people=people.filter(x=>x.id!==person.id);
+        saveStore(PEOPLE_KEY,people);
         renderAdmin();
       });
-      row.append(detail, remove);
+      actions.append(remove);
+      row.append(detail,actions);
       list.append(row);
     });
-    if (!people.length) list.append(create('p', 'volunteer-empty', 'Nenhum cadastro de teste neste navegador. Use a página Cadastro para experimentar.'));
-    el('stat-volunteers').textContent = String(people.length);
+    if(!people.length)list.append(create('p','volunteer-empty','Nenhum cadastro de teste neste navegador. Use a página Cadastro para experimentar.'));
+    el('stat-volunteers').textContent=String(people.length);
   }
 
   function renderAdminEvents() {
@@ -433,8 +503,9 @@ import { validarLogin, obterStatusDisponibilidade } from './regras.js';
 
   function renderAdmin() {
     renderInventory();
-    renderPeople();
     renderAdminEvents();
+    renderMessageOptions();
+    renderPeople();
   }
 
   el('login-form').addEventListener('submit', event => {
@@ -472,6 +543,11 @@ import { validarLogin, obterStatusDisponibilidade } from './regras.js';
     if(event)jumpToEvent(event);
   });
 
+  ['message-kind','message-event'].forEach(id => el(id).addEventListener('change',()=>{
+    el('message-event').disabled=el('message-kind').value==='general';
+    renderPeople();
+  }));
+
   el('volunteer-form').addEventListener('submit', event => {
     event.preventDefault();
     const form = el('volunteer-form');
@@ -480,6 +556,15 @@ import { validarLogin, obterStatusDisponibilidade } from './regras.js';
     const email = el('reg-email').value.trim().toLowerCase();
     const phone = el('reg-phone').value.trim();
     const area = el('reg-area').value;
+    const whatsappConsent=el('reg-whatsapp-consent').checked;
+    if(phone && !whatsappPhone(phone)){
+      feedback('register-feedback','Informe um celular com DDD no formato (11) 99999-9999, ou deixe o campo em branco.',true);
+      return;
+    }
+    if(whatsappConsent && !phone){
+      feedback('register-feedback','Para autorizar mensagens pelo WhatsApp, informe seu celular com DDD.',true);
+      return;
+    }
     if (name.length < 3 || !email || !area || !el('reg-consent').checked) {
       feedback('register-feedback', 'Preencha os campos obrigatórios e confirme que entendeu a demonstração.', true);
       return;
@@ -488,14 +573,14 @@ import { validarLogin, obterStatusDisponibilidade } from './regras.js';
       feedback('register-feedback', 'Já existe um cadastro de teste com este e-mail neste navegador.', true);
       return;
     }
-    const next = [...people, { id: String(Date.now()) + '-' + String(Math.random()).slice(2), name, email, phone, area }];
+    const next = [...people, { id: String(Date.now()) + '-' + String(Math.random()).slice(2), name, email, phone, area, whatsappConsent }];
     if (!saveStore(PEOPLE_KEY, next)) {
       feedback('register-feedback', 'Não foi possível salvar neste navegador. Confira se o armazenamento local está habilitado.', true);
       return;
     }
     people = next;
     form.reset();
-    feedback('register-feedback', 'Cadastro de TESTE salvo apenas neste navegador. A coordenação do projeto não recebeu estes dados.');
+    feedback('register-feedback', 'Cadastro de TESTE salvo apenas neste navegador. A coordenação do projeto não recebeu estes dados.'+(whatsappConsent?' Você autorizou mensagens nesta demonstração, mas nenhuma foi enviada.':''));
   });
 
   el('event-form').addEventListener('submit', event => {
