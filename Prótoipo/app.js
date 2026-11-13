@@ -1,7 +1,7 @@
 import { validarLogin, obterStatusDisponibilidade } from './regras.js';
 
 (() => {
-  const screens = ['login', 'cadastro', 'escala', 'resultado', 'admin'];
+  const screens = ['login', 'admin-login', 'cadastro', 'escala', 'resultado', 'admin'];
   const el = id => document.getElementById(id);
   const params = new URLSearchParams(location.search);
   const STOCK_KEY = 'entre_nessa_onda_stock_demo_v1';
@@ -43,7 +43,6 @@ import { validarLogin, obterStatusDisponibilidade } from './regras.js';
   events = events.filter(event => event && typeof event.id === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(event.date || '') && typeof event.title === 'string');
   if (!responses || typeof responses !== 'object' || Array.isArray(responses)) responses = {};
   let status = 'pendente';
-  let loginRole = 'volunteer';
   let currentRole = null;
   let activeVolunteerId = null;
   const batchSelected = new Set();
@@ -66,16 +65,15 @@ import { validarLogin, obterStatusDisponibilidade } from './regras.js';
 
   function go(screen) {
     if (screen === 'admin' && currentRole !== 'admin') {
-      setLoginRole('admin');
-      screen = 'login';
+      screen = 'admin-login';
     }
     screens.forEach(x => el('screen-' + x).classList.toggle('active', x === screen));
     try { history.replaceState(null, '', '?tela=' + screen); } catch (_) {}
     if (typeof scrollTo === 'function') scrollTo(0, 0);
     document.title = 'Entre Nessa Onda — ' + ({
-      login: 'Entrada', cadastro: 'Cadastro demonstrativo',
-      escala: 'Minhas escalas', resultado: 'Resultado',
-      admin: 'Administração demonstrativa'
+      login: 'Portal do voluntário', 'admin-login': 'Acesso da coordenação',
+      cadastro: 'Cadastro demonstrativo', escala: 'Minhas escalas',
+      resultado: 'Resultado', admin: 'Administração demonstrativa'
     }[screen]);
     if (screen === 'admin') renderAdmin();
   }
@@ -960,51 +958,41 @@ import { validarLogin, obterStatusDisponibilidade } from './regras.js';
     renderReports();
   }
 
-  function setLoginRole(role) {
-    loginRole = role === 'admin' ? 'admin' : 'volunteer';
-    const admin = loginRole === 'admin';
-    el('role-admin').classList.toggle('active',admin);
-    el('role-volunteer').classList.toggle('active',!admin);
-    el('role-admin').setAttribute('aria-pressed',String(admin));
-    el('role-volunteer').setAttribute('aria-pressed',String(!admin));
-    el('admin-demo-credentials').hidden=!admin;
-    el('login-submit-label').textContent=admin?'Acessar administração':'Entrar e ver minhas escalas';
-    el('login-help').textContent=admin
-      ? 'Login de demonstração: use as credenciais de teste abaixo. Não há autenticação de servidor.'
-      : 'Voluntário (demonstração): informe um e-mail válido e uma senha fictícia. Não use senhas reais.';
-    el('login-error').classList.remove('show');
-    el('email').value='';
-    el('password').value='';
-    el('email').placeholder=admin?'admin@entrenessaonda.demo':'Coloque seu e-mail aqui';
-  }
-
   function logout() {
+    const previousRole=currentRole;
     currentRole=null;
     activeVolunteerId=null;
-    setLoginRole('volunteer');
-    go('login');
+    el('password').value='';
+    el('admin-password').value='';
+    go(previousRole==='admin'?'admin-login':'login');
   }
-
-  el('role-volunteer').addEventListener('click',()=>setLoginRole('volunteer'));
-  el('role-admin').addEventListener('click',()=>setLoginRole('admin'));
 
   el('login-form').addEventListener('submit', event => {
     event.preventDefault();
     const email=el('email');
     const password=el('password');
-    if (loginRole==='admin') {
-      const valid=email.value.trim().toLowerCase()==='admin@entrenessaonda.demo' && password.value==='Onda2026!';
-      el('login-error').classList.toggle('show',!valid);
-      el('login-error').textContent=valid?'':'Credenciais de demonstração inválidas. Utilize as informações exibidas abaixo.';
-      if(valid){currentRole='admin';activeVolunteerId=null;go('admin');}
-      else email.focus();
-      return;
-    }
-    const valid = validarLogin(email.checkValidity(), password.value);
-    el('login-error').classList.toggle('show', !valid);
+    const valid=validarLogin(email.checkValidity(),password.value);
+    el('login-error').classList.toggle('show',!valid);
     el('login-error').textContent='Informe um e-mail válido e preencha a senha para continuar.';
-    if (valid){currentRole='volunteer';activeVolunteerId=people.find(p=>p.email===email.value.trim().toLowerCase())?.id||null;view('calendar');}
-    else (email.checkValidity()?password:email).focus();
+    if(valid){
+      currentRole='volunteer';
+      activeVolunteerId=people.find(p=>p.email===email.value.trim().toLowerCase())?.id||null;
+      view('calendar');
+    }else (email.checkValidity()?password:email).focus();
+  });
+
+  el('admin-login-form').addEventListener('submit', event => {
+    event.preventDefault();
+    const email=el('admin-email');
+    const password=el('admin-password');
+    const valid=email.value.trim().toLowerCase()==='admin@entrenessaonda.demo'
+      && password.value==='Onda2026!';
+    el('admin-login-error').classList.toggle('show',!valid);
+    if(valid){
+      currentRole='admin';
+      activeVolunteerId=null;
+      go('admin');
+    } else email.focus();
   });
 
   el('toggle-password').addEventListener('click', () => {
@@ -1013,6 +1001,13 @@ import { validarLogin, obterStatusDisponibilidade } from './regras.js';
     el('toggle-password').textContent = input.type === 'password' ? 'Mostrar' : 'Ocultar';
     el('toggle-password').setAttribute('aria-label', input.type === 'password' ? 'Mostrar senha' : 'Ocultar senha');
   });
+  el('admin-toggle-password').addEventListener('click', () => {
+    const password=el('admin-password');
+    password.type=password.type==='password'?'text':'password';
+    el('admin-toggle-password').textContent=password.type==='password'?'Mostrar':'Ocultar';
+    el('admin-toggle-password').setAttribute('aria-label',password.type==='password'?'Mostrar senha':'Ocultar senha');
+  });
+  el('admin-login-back').addEventListener('click',()=>go('login'));
   el('btn-confirm').addEventListener('click', () => updateResult(true));
   el('btn-decline').addEventListener('click', () => updateResult(false));
   ['result-back', 'btn-back-calendar', 'btn-view-scales'].forEach(id =>
@@ -1026,12 +1021,7 @@ import { validarLogin, obterStatusDisponibilidade } from './regras.js';
   el('register-back').addEventListener('click',()=>go(currentRole==='admin'?'admin':'login'));
   ['go-register', 'side-register', 'admin-new-volunteer'].forEach(id =>
     el(id).addEventListener('click', () => go('cadastro')));
-  ['go-admin', 'side-admin'].forEach(id =>
-    el(id).addEventListener('click', () => {
-      if(currentRole==='admin'){go('admin');return;}
-      setLoginRole('admin');
-      go('login');
-    }));
+  el('go-admin').addEventListener('click', () => go(currentRole==='admin'?'admin':'admin-login'));
   el('prev-month').addEventListener('click',()=>navigateMonth(-1));
   el('next-month').addEventListener('click',()=>navigateMonth(1));
   el('back-to-event').addEventListener('click',()=>{
@@ -1270,6 +1260,5 @@ import { validarLogin, obterStatusDisponibilidade } from './regras.js';
   renderDay();
   renderParticipations();
   const entry = params.get('tela');
-  if(entry==='admin') setLoginRole('admin');
   go(screens.includes(entry) ? entry : 'login');
 })();

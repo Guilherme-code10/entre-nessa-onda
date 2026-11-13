@@ -31,9 +31,10 @@ function register(name,email,area='Recreação') {
 }
 function admin() {
   el('go-admin').click();
-  el('email').value='admin@entrenessaonda.demo';
-  el('password').value='Onda2026!';
-  submit('login-form');
+  expect(el('screen-admin-login').classList.contains('active')).toBe(true);
+  el('admin-email').value='admin@entrenessaonda.demo';
+  el('admin-password').value='Onda2026!';
+  submit('admin-login-form');
   expect(el('screen-admin').classList.contains('active')).toBe(true);
 }
 function assignByEmail(email,sector='Recreação') {
@@ -59,8 +60,22 @@ describe('Cenarios adicionais de regressao e limites',()=>{
     vi.resetModules();
     await import('../Prótoipo/app.js');
     expect(el('screen-admin').classList.contains('active')).toBe(false);
+    expect(el('screen-admin-login').classList.contains('active')).toBe(true);
+    expect(el('admin-demo-credentials').closest('#screen-admin-login')).toBeTruthy();
+  });
+
+  it('link direto abre apenas o login administrativo e permite voltar ao voluntario',async()=>{
+    await boot();
+    history.replaceState(null,'','/?tela=admin-login');
+    vi.resetModules();
+    await import('../Prótoipo/app.js');
+    expect(el('screen-admin-login').classList.contains('active')).toBe(true);
+    expect(el('screen-login').classList.contains('active')).toBe(false);
+    expect(el('screen-admin').classList.contains('active')).toBe(false);
+    expect(el('screen-admin-login').querySelector('#admin-email')).toBeTruthy();
+    expect(el('screen-login').querySelector('#admin-email')).toBeNull();
+    el('admin-login-back').click();
     expect(el('screen-login').classList.contains('active')).toBe(true);
-    expect(el('admin-demo-credentials').hidden).toBe(false);
   });
 
   it('nao permite reduzir vagas de setor abaixo da equipe ja escalada',()=>{
@@ -95,6 +110,7 @@ describe('Cenarios adicionais de regressao e limites',()=>{
     const second=assignByEmail('beta@exemplo.org');
     expect(second).toBeTruthy();
     el('admin-back').click();
+    el('admin-login-back').click();
     el('email').value='alfa@exemplo.org';
     el('password').value='123456';
     submit('login-form');

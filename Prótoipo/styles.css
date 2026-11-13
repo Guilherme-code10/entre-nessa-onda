@@ -440,3 +440,35 @@ html{background:#eaf4fc;color:var(--dark)}body{margin:0;padding:0!important;back
 /* Regra de vagas: aviso ao voluntario quando uma recusa liberou a ultima vaga */
 .availability-warning{padding:13px 16px;margin:0 0 15px;border-radius:11px;border:1px solid #e7c17b;background:#fff8e5;color:#7b5000;font-size:13px;font-weight:750;line-height:1.5}
 .availability-warning[hidden]{display:none}
+
+/* Entradas independentes para voluntarios e coordenacao (prototipo) */
+.login-intro-copy{color:#5a7490;font-size:13px;line-height:1.65;margin:0 0 19px;max-width:500px}
+.entry-link-admin{color:#19547d!important;font-weight:750!important}
+.admin-login-screen{min-height:100vh;background:linear-gradient(180deg,#edf8fe 0%,#f5fbff 48%,#ffffff 100%)}
+.admin-login-hero{background:linear-gradient(128deg,#072f5b 0%,#074c84 62%,#087d98 100%);color:#fff;padding:33px 24px 82px;position:relative;overflow:hidden}
+.admin-login-hero::after{content:'';display:block;position:absolute;width:440px;height:440px;border:70px solid rgba(255,255,255,.045);border-radius:50%;top:-300px;right:-130px;pointer-events:none}
+.admin-login-hero-inner{max-width:960px;margin:0 auto;position:relative;z-index:1}
+.admin-login-hero .brand-lockup{align-items:center;gap:13px}
+.admin-login-hero .brand-name{color:#fff;font-size:21px}
+.admin-login-hero .brand-kicker{color:#badbed;font-size:11px}
+.admin-login-hero .official-logo{object-fit:contain;flex-shrink:0}
+.admin-login-intro{padding:31px 0 6px;max-width:620px}
+.admin-login-tag{display:inline-flex;align-items:center;gap:7px;border-radius:30px;border:1px solid rgba(255,255,255,.3);padding:7px 12px;color:#d7f1ff;background:rgba(255,255,255,.08);font-size:10px;letter-spacing:1px;font-weight:900}
+.admin-login-intro h1{font-size:clamp(24px,3.2vw,39px);letter-spacing:-1.1px;line-height:1.18;max-width:610px;margin:16px 0 12px;font-weight:900}
+.admin-login-intro p{color:#d3e8f4;font-size:13px;line-height:1.6;max-width:580px;margin:0}
+.admin-login-main{max-width:960px;margin:-50px auto 0;padding:0 24px 40px;position:relative;z-index:2}
+.admin-login-card{background:#fff;max-width:530px;border:1px solid #d7e7f2;border-radius:20px;box-shadow:0 20px 50px rgba(7,49,93,.11);padding:30px 34px}
+.admin-login-card .section-kicker{color:#0877a6;font-size:11px;font-weight:900;letter-spacing:1.2px}
+.admin-login-card h2{font-size:26px;font-weight:900;color:#103d6c;letter-spacing:-.6px;margin:8px 0 4px}
+.admin-login-card-desc{font-size:12px;color:#6b8297;margin:0 0 23px}
+.admin-login-card form .field{margin-bottom:15px}
+.admin-login-card form .field>label{font-weight:850;color:#235075;font-size:12px;display:block;margin:0 0 8px}
+.admin-login-card .input-wrap{position:relative}
+.admin-login-card .input-wrap input{border-color:#c6dfec;background:#fbfdff}
+.admin-login-card .input-wrap input:focus{border-color:#278bbd;outline:3px solid #d5f1ff}
+.admin-login-submit{width:100%;display:flex;justify-content:center;align-items:center;gap:9px;margin-top:15px}
+.admin-login-card .admin-demo-credentials{margin-top:20px}
+.admin-login-back{border:0;background:none;color:#195f91;padding:10px 0 0;font-size:12px;font-weight:850;font-family:inherit;cursor:pointer;margin-top:17px}
+.admin-login-back:hover{text-decoration:underline}
+.admin-login-footer{max-width:530px;text-align:center;font-size:11px;color:#6d8499;margin:18px 0}
+@media(max-width:640px){.admin-login-hero{padding:26px 20px 68px}.admin-login-hero .official-logo{width:66px;height:66px}.admin-login-hero .brand-name{font-size:17px}.admin-login-intro{padding-top:24px}.admin-login-main{padding:0 14px 30px;margin-top:-40px}.admin-login-card{border-radius:16px;padding:23px 19px}.admin-login-card h2{font-size:24px}}

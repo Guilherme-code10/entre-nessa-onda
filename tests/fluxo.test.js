@@ -21,9 +21,10 @@ async function iniciarPrototipo({ manterDados = false } = {}) {
 
 function entrarAdmin() {
   el('go-admin').click();
-  el('email').value='admin@entrenessaonda.demo';
-  el('password').value='Onda2026!';
-  el('login-form').dispatchEvent(
+  expect(el('screen-admin-login').classList.contains('active')).toBe(true);
+  el('admin-email').value='admin@entrenessaonda.demo';
+  el('admin-password').value='Onda2026!';
+  el('admin-login-form').dispatchEvent(
     new Event('submit', {bubbles:true,cancelable:true})
   );
   expect(el('screen-admin').classList.contains('active')).toBe(true);
@@ -262,31 +263,38 @@ describe('Integracao - Entre Nessa Onda', () => {
     expect(el('volunteer-list').querySelector('a.whatsapp-link')).toBeNull();
   });
 
-  it('apresenta login de administrador separado do voluntario', () => {
-    el('role-admin').click();
-
-    expect(el('admin-demo-credentials').hidden).toBe(false);
-    expect(el('login-submit-label').textContent).toContain('administração');
-    enviarLogin('pessoa@exemplo.org','123456');
-
+  it('apresenta pagina de administrador separada e valida credenciais', () => {
     expect(el('screen-login').classList.contains('active')).toBe(true);
-    expect(el('login-error').classList.contains('show')).toBe(true);
+    expect(el('screen-login').querySelector('#admin-email')).toBeNull();
+    expect(el('screen-login').querySelector('#role-admin')).toBeNull();
+    el('go-admin').click();
 
-    el('email').value='admin@entrenessaonda.demo';
-    el('password').value='Onda2026!';
-    el('login-form').dispatchEvent(new Event('submit',{bubbles:true,cancelable:true}));
+    expect(el('screen-admin-login').classList.contains('active')).toBe(true);
+    expect(el('screen-admin-login').querySelector('#admin-demo-credentials')).toBeTruthy();
+    expect(el('screen-admin-login').querySelector('#admin-login-form')).toBeTruthy();
+    expect(el('screen-login').querySelector('#admin-login-form')).toBeNull();
 
+    el('admin-email').value='pessoa@exemplo.org';
+    el('admin-password').value='123456';
+    el('admin-login-form').dispatchEvent(new Event('submit',{bubbles:true,cancelable:true}));
+    expect(el('screen-admin-login').classList.contains('active')).toBe(true);
+    expect(el('admin-login-error').classList.contains('show')).toBe(true);
+
+    el('admin-email').value='admin@entrenessaonda.demo';
+    el('admin-password').value='Onda2026!';
+    el('admin-login-form').dispatchEvent(new Event('submit',{bubbles:true,cancelable:true}));
     expect(el('screen-admin').classList.contains('active')).toBe(true);
     el('admin-back').click();
-    expect(el('screen-login').classList.contains('active')).toBe(true);
+    expect(el('screen-admin-login').classList.contains('active')).toBe(true);
   });
 
-  it('voluntario nao entra no admin pelo menu sem o login de teste', () => {
+  it('voluntario possui menu independente e nao ve acesso administrativo interno', () => {
     enviarLogin('voluntario@exemplo.org','123456');
-    el('side-admin').click();
+    expect(el('screen-escala').classList.contains('active')).toBe(true);
+    expect(el('screen-escala').querySelector('#side-admin')).toBeNull();
     expect(el('screen-admin').classList.contains('active')).toBe(false);
+    el('side-logout').click();
     expect(el('screen-login').classList.contains('active')).toBe(true);
-    expect(el('role-admin').getAttribute('aria-pressed')).toBe('true');
   });
 
   it('central de mensagens deixa selecionar destinatario e editar texto', () => {
@@ -481,6 +489,7 @@ describe('Integracao - Entre Nessa Onda', () => {
     el('scale-sector').value='Recreação';
     el('scale-form').dispatchEvent(new Event('submit',{bubbles:true,cancelable:true}));
     el('admin-back').click();
+    el('admin-login-back').click();
     enviarLogin('projeto@exemplo.org','senha-teste');
     el('btn-my-scales').click();
     expect(el('participation-records').textContent).toContain('Tarde de Brincadeiras');
@@ -529,6 +538,7 @@ describe('Integracao - Entre Nessa Onda', () => {
     expect(el('assignment-list').textContent).toContain('Teste Fluxo Completo');
 
     el('admin-back').click();
+    el('admin-login-back').click();
     enviarLogin('integracao@exemplo.org', 'senha-ficticia');
     expect(el('screen-escala').classList.contains('active')).toBe(true);
     el('next-month').click();
