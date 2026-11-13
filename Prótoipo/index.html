@@ -28,14 +28,15 @@
  </header>
  <main class="content">
   <div class="section-kicker">Acesso à plataforma</div><h2 class="section-title">Entre na sua conta</h2>
-  <form class="panel" id="login-form" novalidate>
-   <div class="field"><label for="email">E-mail</label><div class="input-wrap"><svg class="input-icon" aria-hidden="true"><use href="#i-mail"/></svg><input id="email" type="email" autocomplete="username" placeholder="voluntario@exemplo.org" value="voluntario@exemplo.org" aria-describedby="login-help" required/></div></div>
-   <div class="field"><label for="password">Senha</label><div class="input-wrap"><svg class="input-icon" aria-hidden="true"><use href="#i-lock"/></svg><input id="password" type="password" autocomplete="current-password" placeholder="Digite sua senha" required/><button class="eye-button" id="toggle-password" type="button" aria-label="Mostrar senha">Mostrar</button></div></div>
+  <form class="panel" id="login-form" novalidate autocomplete="off">
+   <div class="field"><label for="email">E-mail</label><div class="input-wrap"><svg class="input-icon" aria-hidden="true"><use href="#i-mail"/></svg><input id="email" type="email" autocomplete="off" placeholder="seuemail@exemplo.com" aria-describedby="login-help" required/></div></div>
+   <div class="field"><label for="password">Senha</label><div class="input-wrap"><svg class="input-icon" aria-hidden="true"><use href="#i-lock"/></svg><input id="password" type="password" autocomplete="new-password" placeholder="Digite sua senha" required/><button class="eye-button" id="toggle-password" type="button" aria-label="Mostrar senha">Mostrar</button></div></div>
    <button class="primary" type="submit">Entrar e ver minhas escalas <svg class="tiny-icon" aria-hidden="true"><use href="#i-arrow"/></svg></button>
    <div class="error-msg" id="login-error" role="alert">Informe um e-mail válido e preencha a senha para continuar.</div>
-   <p id="login-help" class="muted-foot">Seu acesso é individual. Cada perfil visualiza apenas as informações permitidas.</p>
+   <p id="login-help" class="muted-foot">Acesso demonstrativo: informe um e-mail válido e qualquer senha de teste. Não use sua senha pessoal.</p>
   </form>
-  <div class="privacy"><svg class="icon" aria-hidden="true"><use href="#i-lock"/></svg><p><strong>Seus dados, com cuidado.</strong><br/>O acesso real terá autenticação e permissões verificadas no servidor.</p></div>
+  <div class="entry-actions"><button type="button" id="go-register" class="entry-link"><svg class="tiny-icon" aria-hidden="true"><use href="#i-users"/></svg> Quero me cadastrar como voluntário</button><button type="button" id="go-admin" class="entry-link"><svg class="tiny-icon" aria-hidden="true"><use href="#i-info"/></svg> Ver painel administrativo (demonstração)</button></div>
+  <div class="privacy"><svg class="icon" aria-hidden="true"><use href="#i-lock"/></svg><p><strong>Seus dados, com cuidado.</strong><br/>Nesta demonstração, não há autenticação de verdade. Não use dados pessoais reais.</p></div>
  </main>
  <footer class="bottom-note">Protótipo acadêmico • dados fictícios • sem login real</footer>
 </section>
@@ -48,7 +49,7 @@
       <button class="side-link active" id="side-calendar" type="button"><svg class="icon" aria-hidden="true"><use href="#i-calendar"/></svg><span>Minhas escalas</span></button>
       <button class="side-link" id="side-participations" type="button"><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg><span>Minhas participações</span></button>
       <a class="side-link" href="https://www.instagram.com/projetoentrenessaonda/" target="_blank" rel="noopener noreferrer"><svg class="icon" aria-hidden="true"><use href="#i-users"/></svg><span>Conheça o projeto</span><span class="external-indicator" aria-hidden="true">↗</span></a>
-      <button class="side-link side-exit" id="side-logout" type="button"><svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg><span>Sair da demonstração</span></button>
+      <button class="side-link" id="side-register" type="button"><svg class="icon" aria-hidden="true"><use href="#i-users"/></svg><span>Cadastro</span></button><button class="side-link" id="side-admin" type="button"><svg class="icon" aria-hidden="true"><use href="#i-info"/></svg><span>Admin / Estoque</span></button><button class="side-link side-exit" id="side-logout" type="button"><svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg><span>Sair da demonstração</span></button>
     </nav>
     <div class="sidebar-spacer"></div>
     <div class="sidebar-wave" aria-hidden="true"><span></span><span></span></div>
@@ -101,6 +102,56 @@
     </main>
     <nav class="bottom-bar" aria-label="Menu mobile"><button class="bottom-item current" id="nav-calendar" type="button"><svg class="icon" aria-hidden="true"><use href="#i-calendar"/></svg>Calendário</button><button class="bottom-item" id="nav-my" type="button"><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg>Participações</button><button class="bottom-item" id="nav-exit" type="button"><svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg>Sair</button></nav>
   </div>
+</section>
+
+
+<section id="screen-cadastro" class="screen portal-form-screen" aria-label="Cadastro demonstrativo de voluntários">
+ <header class="inner-topbar"><div class="inner-heading"><span class="inner-kicker">PROJETO ENTRE NESSA ONDA</span><h1>Faça parte dessa onda! 💛</h1><p>Seu tempo e carinho podem transformar o dia de alguém.</p></div><button class="back-to-home" type="button" id="register-back">← Voltar ao início</button></header>
+ <main class="form-page-content">
+  <div class="form-page-intro"><span class="form-icon">♡</span><div><h2>Cadastro de voluntários</h2><p>Conte um pouco sobre você e em quais atividades gostaria de ajudar.</p></div></div>
+  <p class="demo-warning"><svg class="tiny-icon" aria-hidden="true"><use href="#i-info"/></svg><span><strong>Cadastro de demonstração.</strong> Os dados ficam apenas neste navegador e podem ser apagados; não são enviados à coordenação. Use informações fictícias para testar.</span></p>
+  <form id="volunteer-form" class="beautiful-form" autocomplete="off">
+   <div class="form-grid">
+    <div class="field"><label for="reg-name">Nome completo <span aria-hidden="true">*</span></label><input id="reg-name" name="name" type="text" placeholder="Nome de exemplo" minlength="3" maxlength="100" required autocomplete="off"/></div>
+    <div class="field"><label for="reg-email">E-mail <span aria-hidden="true">*</span></label><input id="reg-email" name="email" type="email" placeholder="exemplo@email.com" maxlength="120" required autocomplete="off"/></div>
+    <div class="field"><label for="reg-phone">Telefone (opcional)</label><input id="reg-phone" name="phone" type="tel" placeholder="(00) 00000-0000" maxlength="24" autocomplete="off"/></div>
+    <div class="field"><label for="reg-area">Como gostaria de ajudar? <span aria-hidden="true">*</span></label><select id="reg-area" name="area" required><option value="">Selecione uma área</option><option value="Recreação">Recreação e brincadeiras</option><option value="Acolhimento">Acolhimento</option><option value="Organização">Organização e logística</option><option value="Materiais">Materiais e estoque</option><option value="Apoio geral">Apoio geral</option></select></div>
+   </div>
+   <label class="consent-label"><input type="checkbox" id="reg-consent" required/><span>Entendi que este cadastro é apenas uma simulação local e não equivale à inscrição oficial no projeto.</span></label>
+   <button type="submit" class="primary form-submit">Salvar cadastro de teste <svg class="tiny-icon" aria-hidden="true"><use href="#i-check"/></svg></button>
+   <p id="register-feedback" class="form-feedback" role="status" aria-live="polite" hidden></p>
+  </form>
+  <p class="form-end-note">Conheça as ações reais no <a href="https://www.instagram.com/projetoentrenessaonda/" target="_blank" rel="noopener noreferrer">Instagram do Entre Nessa Onda ↗</a></p>
+ </main>
+</section>
+
+
+<section id="screen-admin" class="screen admin-screen" aria-label="Painel administrativo demonstrativo">
+ <header class="inner-topbar admin-topbar"><div class="inner-heading"><span class="inner-kicker">PROJETO ENTRE NESSA ONDA • GESTÃO</span><h1>Painel administrativo</h1><p>Materiais, estoque e cadastros em uma única visão.</p></div><button class="back-to-home" id="admin-back" type="button">← Voltar ao início</button></header>
+ <main class="admin-main">
+  <p class="demo-warning"><svg class="tiny-icon" aria-hidden="true"><use href="#i-info"/></svg><span><strong>Área administrativa de demonstração — sem proteção por senha.</strong> Os materiais são fictícios, e os cadastros são locais deste navegador. Não utilize dados reais ou informações confidenciais.</span></p>
+  <div class="admin-intro"><div><span class="section-kicker">CONTROLE DE MATERIAIS</span><h2>Visão geral</h2><p>Organize os materiais necessários para as ações comunitárias.</p></div><button class="admin-reset" id="reset-demo-stock" type="button">Restaurar estoque de exemplo</button></div>
+  <div class="stats-grid">
+   <div class="stat-card"><span>Itens cadastrados</span><strong id="stat-products">0</strong><small>tipos de materiais</small></div>
+   <div class="stat-card"><span>Unidades disponíveis</span><strong id="stat-units">0</strong><small>somadas em estoque</small></div>
+   <div class="stat-card"><span>Estoque baixo</span><strong id="stat-low">0</strong><small>itens para repor</small></div>
+   <div class="stat-card"><span>Cadastros de teste</span><strong id="stat-volunteers">0</strong><small>somente neste navegador</small></div>
+  </div>
+  <div class="admin-grid">
+   <section class="admin-panel" aria-label="Lista de materiais"><div class="admin-panel-heading"><div><h3>Estoque de materiais</h3><p>Utilize + e − para simular a entrada e saída de unidades.</p></div><span class="admin-panel-chip">EXEMPLO</span></div><div id="inventory-list" class="inventory-list" aria-live="polite"></div></section>
+   <section class="admin-panel admin-form-panel" aria-label="Cadastrar materiais"><div class="admin-panel-heading"><div><h3>Novo material</h3><p>Inclua um item no estoque demonstrativo.</p></div></div>
+    <form id="stock-form" class="beautiful-form" autocomplete="off">
+     <div class="field"><label for="stock-name">Nome do material</label><input id="stock-name" name="stock-name" required minlength="2" maxlength="70" placeholder="Ex.: Bolas coloridas"/></div>
+     <div class="field"><label for="stock-category">Categoria</label><select id="stock-category"><option value="Recreação">Recreação</option><option value="Papelaria">Papelaria</option><option value="Alimentação">Alimentação</option><option value="Higiene">Higiene</option><option value="Outros">Outros</option></select></div>
+     <div class="form-grid small-cols"><div class="field"><label for="stock-qty">Quantidade</label><input id="stock-qty" type="number" min="0" max="99999" value="0" required/></div><div class="field"><label for="stock-min">Mínimo desejado</label><input id="stock-min" type="number" min="0" max="99999" value="5" required/></div></div>
+     <button type="submit" class="primary">Adicionar ao estoque</button>
+     <p class="form-feedback" id="stock-feedback" role="status" aria-live="polite" hidden></p>
+    </form>
+   </section>
+  </div>
+  <section class="admin-panel volunteer-admin" aria-label="Cadastros de voluntários"><div class="admin-panel-heading"><div><h3>Cadastros de voluntários</h3><p>Somente os cadastros demonstrativos criados neste navegador aparecerão aqui.</p></div><div class="volunteer-actions"><button id="admin-new-volunteer" class="admin-mini-btn" type="button">+ Novo cadastro</button><button id="clear-demo-people" class="admin-mini-btn danger" type="button">Apagar cadastros locais</button></div></div><div id="volunteer-list" class="volunteer-list"></div></section>
+  <p class="admin-bottom-note">Para controlar o estoque e os cadastros de verdade entre dispositivos, precisaremos conectar um banco de dados e autenticação administrativa.</p>
+ </main>
 </section>
 
 <section id="screen-resultado" class="screen" aria-label="Tela 3: resultado da confirmação">
