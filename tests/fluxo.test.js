@@ -175,4 +175,81 @@ describe('Integracao - Entre Nessa Onda', () => {
     expect(el('admin-event-list').textContent).toContain('Evento de Teste Editado');
   });
 
+  it('abre o WhatsApp com mensagem pronta somente com telefone e autorizacao', () => {
+    el('go-register').click();
+    el('reg-name').value = 'Pessoa Exemplo';
+    el('reg-email').value = 'pessoa@exemplo.org';
+    el('reg-phone').value = '(11) 99999-9999';
+    el('reg-area').value = 'Recreação';
+    el('reg-consent').checked = true;
+    el('reg-whatsapp-consent').checked = true;
+    el('volunteer-form').dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
+
+    expect(el('register-feedback').textContent).toContain('Cadastro de TESTE salvo');
+    el('register-back').click();
+    el('go-admin').click();
+
+    const link = el('volunteer-list').querySelector('a.whatsapp-link');
+    expect(link).toBeTruthy();
+    expect(link.href).toContain('wa.me/5511999999999?text=');
+    expect(decodeURIComponent(link.href)).toContain('Pessoa');
+    expect(decodeURIComponent(link.href)).toContain('Tarde de Brincadeiras');
+    expect(link.target).toBe('_blank');
+
+    el('message-kind').value = 'general';
+    el('message-kind').dispatchEvent(new Event('change'));
+    expect(decodeURIComponent(el('volunteer-list').querySelector('a.whatsapp-link').href))
+      .toContain('próximas ações sociais');
+  });
+
+  it('nao disponibiliza mensagem sem consentimento', () => {
+    el('go-register').click();
+    el('reg-name').value = 'Pessoa Sem Consentimento';
+    el('reg-email').value = 'semconsentimento@exemplo.org';
+    el('reg-phone').value = '(11) 99999-9999';
+    el('reg-area').value = 'Acolhimento';
+    el('reg-consent').checked = true;
+    el('volunteer-form').dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
+
+    el('register-back').click();
+    el('go-admin').click();
+
+    expect(el('volunteer-list').querySelector('a.whatsapp-link')).toBeNull();
+    expect(el('volunteer-list').textContent).toContain('Sem autorização');
+  });
+
+  it('exige celular valido quando contato pelo WhatsApp e autorizado', () => {
+    el('go-register').click();
+    el('reg-name').value = 'Pessoa Sem Celular';
+    el('reg-email').value = 'semcelular@exemplo.org';
+    el('reg-area').value = 'Organização';
+    el('reg-consent').checked = true;
+    el('reg-whatsapp-consent').checked = true;
+    el('volunteer-form').dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
+
+    expect(el('register-feedback').textContent).toContain('informe seu celular');
+    el('register-back').click();
+    el('go-admin').click();
+    expect(el('stat-volunteers').textContent).toBe('0');
+  });
+
+  it('permite revogar autorizacao e remove link de mensagens', () => {
+    el('go-register').click();
+    el('reg-name').value = 'Pessoa Autorizada';
+    el('reg-email').value = 'autorizada@exemplo.org';
+    el('reg-phone').value = '11999999999';
+    el('reg-area').value = 'Recreação';
+    el('reg-consent').checked = true;
+    el('reg-whatsapp-consent').checked = true;
+    el('volunteer-form').dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
+
+    el('register-back').click();
+    el('go-admin').click();
+    expect(el('volunteer-list').querySelector('a.whatsapp-link')).toBeTruthy();
+    const revoke = [...el('volunteer-list').querySelectorAll('button')].find(x=>x.textContent==='Revogar autorização');
+    expect(revoke).toBeTruthy();
+    revoke.click();
+    expect(el('volunteer-list').querySelector('a.whatsapp-link')).toBeNull();
+  });
+
 });
