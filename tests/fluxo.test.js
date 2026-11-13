@@ -19,6 +19,16 @@ async function iniciarPrototipo() {
   await import('../Prótoipo/app.js');
 }
 
+function entrarAdmin() {
+  el('go-admin').click();
+  el('email').value='admin@entrenessaonda.demo';
+  el('password').value='Onda2026!';
+  el('login-form').dispatchEvent(
+    new Event('submit', {bubbles:true,cancelable:true})
+  );
+  expect(el('screen-admin').classList.contains('active')).toBe(true);
+}
+
 function enviarLogin(email, senha) {
   el('email').value = email;
   el('password').value = senha;
@@ -96,7 +106,7 @@ describe('Integracao - Entre Nessa Onda', () => {
   });
 
   it('abre o painel admin com estoque demonstrativo', () => {
-    el('go-admin').click();
+    entrarAdmin();
 
     expect(el('screen-admin').classList.contains('active')).toBe(true);
     expect(el('inventory-list').children.length).toBeGreaterThan(0);
@@ -110,7 +120,7 @@ describe('Integracao - Entre Nessa Onda', () => {
   });
 
   it('permite cadastrar um evento pelo painel administrativo e localiza no calendario', () => {
-    el('go-admin').click();
+    entrarAdmin();
 
     el('event-name').value = 'Oficina de Leitura';
     el('event-date').value = '2026-12-05';
@@ -136,7 +146,7 @@ describe('Integracao - Entre Nessa Onda', () => {
   });
 
   it('bloqueia um evento quando o horario de termino vem antes do inicio', () => {
-    el('go-admin').click();
+    entrarAdmin();
 
     el('event-name').value = 'Evento de Teste';
     el('event-date').value = '2026-12-07';
@@ -163,7 +173,7 @@ describe('Integracao - Entre Nessa Onda', () => {
   });
 
   it('permite editar um evento existente no painel', () => {
-    el('go-admin').click();
+    entrarAdmin();
     const demo = el('admin-event-list').querySelector('[data-event-id="demo-event-14"]');
     demo.querySelectorAll('button')[1].click();
     expect(el('event-edit-id').value).toBe('demo-event-14');
@@ -187,7 +197,7 @@ describe('Integracao - Entre Nessa Onda', () => {
 
     expect(el('register-feedback').textContent).toContain('Cadastro de TESTE salvo');
     el('register-back').click();
-    el('go-admin').click();
+    entrarAdmin();
 
     const link = el('volunteer-list').querySelector('a.whatsapp-link');
     expect(link).toBeTruthy();
@@ -212,7 +222,7 @@ describe('Integracao - Entre Nessa Onda', () => {
     el('volunteer-form').dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
 
     el('register-back').click();
-    el('go-admin').click();
+    entrarAdmin();
 
     expect(el('volunteer-list').querySelector('a.whatsapp-link')).toBeNull();
     expect(el('volunteer-list').textContent).toContain('Sem autorização');
@@ -229,7 +239,7 @@ describe('Integracao - Entre Nessa Onda', () => {
 
     expect(el('register-feedback').textContent).toContain('informe seu celular');
     el('register-back').click();
-    el('go-admin').click();
+    entrarAdmin();
     expect(el('stat-volunteers').textContent).toBe('0');
   });
 
@@ -244,12 +254,78 @@ describe('Integracao - Entre Nessa Onda', () => {
     el('volunteer-form').dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
 
     el('register-back').click();
-    el('go-admin').click();
+    entrarAdmin();
     expect(el('volunteer-list').querySelector('a.whatsapp-link')).toBeTruthy();
     const revoke = [...el('volunteer-list').querySelectorAll('button')].find(x=>x.textContent==='Revogar autorização');
     expect(revoke).toBeTruthy();
     revoke.click();
     expect(el('volunteer-list').querySelector('a.whatsapp-link')).toBeNull();
+  });
+
+  it('apresenta login de administrador separado do voluntario', () => {
+    el('role-admin').click();
+
+    expect(el('admin-demo-credentials').hidden).toBe(false);
+    expect(el('login-submit-label').textContent).toContain('administração');
+    enviarLogin('pessoa@exemplo.org','123456');
+
+    expect(el('screen-login').classList.contains('active')).toBe(true);
+    expect(el('login-error').classList.contains('show')).toBe(true);
+
+    el('email').value='admin@entrenessaonda.demo';
+    el('password').value='Onda2026!';
+    el('login-form').dispatchEvent(new Event('submit',{bubbles:true,cancelable:true}));
+
+    expect(el('screen-admin').classList.contains('active')).toBe(true);
+    el('admin-back').click();
+    expect(el('screen-login').classList.contains('active')).toBe(true);
+  });
+
+  it('voluntario nao entra no admin pelo menu sem o login de teste', () => {
+    enviarLogin('voluntario@exemplo.org','123456');
+    el('side-admin').click();
+    expect(el('screen-admin').classList.contains('active')).toBe(false);
+    expect(el('screen-login').classList.contains('active')).toBe(true);
+    expect(el('role-admin').getAttribute('aria-pressed')).toBe('true');
+  });
+
+  it('central de mensagens deixa selecionar destinatario e editar texto', () => {
+    el('go-register').click();
+    el('reg-name').value='Maria Demonstração';
+    el('reg-email').value='maria@exemplo.org';
+    el('reg-phone').value='11999999999';
+    el('reg-area').value='Acolhimento';
+    el('reg-consent').checked=true;
+    el('reg-whatsapp-consent').checked=true;
+    el('volunteer-form').dispatchEvent(new Event('submit',{bubbles:true,cancelable:true}));
+    el('register-back').click();
+    entrarAdmin();
+    const recipient=el('message-recipient');
+    expect(recipient.options.length).toBe(2);
+    recipient.selectedIndex=1;
+    recipient.dispatchEvent(new Event('change'));
+    expect(el('message-preview').value).toContain('Maria');
+    expect(el('send-whatsapp').getAttribute('aria-disabled')).toBe('false');
+    expect(decodeURIComponent(el('send-whatsapp').href)).toContain('Tarde de Brincadeiras');
+    el('message-preview').value='Olá, Maria! Convite de teste.';
+    el('message-preview').dispatchEvent(new Event('input'));
+    expect(decodeURIComponent(el('send-whatsapp').href)).toContain('Convite de teste.');
+    expect(el('send-whatsapp').target).toBe('_blank');
+  });
+
+  it('central de mensagens bloqueia destinatario sem consentimento', () => {
+    el('go-register').click();
+    el('reg-name').value='Sem Autorização';
+    el('reg-email').value='nao@exemplo.org';
+    el('reg-phone').value='11999999999';
+    el('reg-area').value='Recreação';
+    el('reg-consent').checked=true;
+    el('volunteer-form').dispatchEvent(new Event('submit',{bubbles:true,cancelable:true}));
+    el('register-back').click();
+    entrarAdmin();
+    expect(el('message-recipient').options.length).toBe(1);
+    expect(el('send-whatsapp').getAttribute('aria-disabled')).toBe('true');
+    expect(el('message-preview').disabled).toBe(true);
   });
 
 });
