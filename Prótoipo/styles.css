@@ -228,3 +228,46 @@ html{background:#eaf4fc;color:var(--dark)}body{margin:0;padding:0!important;back
 #screen-login .brand-header .brand-name{font-size:18px}
 #screen-login .brand-header .brand-kicker{font-size:9px}
 }
+
+/* Cadastro de eventos e ligação visual com o calendário — protótipo local */
+.admin-events{margin:34px 0 25px}
+.admin-events-heading{display:flex;align-items:end;justify-content:space-between;gap:16px;margin-bottom:18px}
+.admin-events-heading h2{font-size:29px;letter-spacing:-.7px;color:#0b2c56;margin:5px 0}
+.admin-events-heading p{font-size:13px;color:#5f7b98;line-height:1.55;margin:0}
+.events-grid{grid-template-columns:minmax(0,1.12fr) minmax(290px,.95fr)}
+.admin-event-list{display:grid;gap:11px}
+.admin-event-row{border:1px solid #dce9f7;border-radius:14px;padding:16px;background:#f7fbff;display:grid;grid-template-columns:70px minmax(0,1fr);align-items:start;gap:14px}
+.admin-event-date{background:#e3f3ff;border-radius:13px;text-align:center;padding:12px 4px;color:#0c5392}
+.admin-event-date strong{font-size:25px;line-height:1.1;display:block}
+.admin-event-date span{font-size:10px;font-weight:900;letter-spacing:1.2px;display:block;margin-top:3px}
+.admin-event-info strong{color:#123961;display:block;font-size:14px;overflow-wrap:anywhere}
+.admin-event-info small{display:block;color:#6d88a2;font-size:11px;line-height:1.55;margin-top:5px}
+.admin-event-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.admin-event-actions button{background:#fff;border:1px solid #c8dff1;color:#0b619f;border-radius:9px;padding:8px 10px;font-weight:800;font-size:11px;font-family:inherit;cursor:pointer}
+.admin-event-actions button:hover{background:#e8f6ff}
+.admin-event-actions .danger{border-color:#efc7c7;color:#9a3b3b}
+.event-form-panel .beautiful-form{padding:0;border:0;box-shadow:none;border-radius:0}
+.event-form textarea{font-family:inherit;width:100%;min-height:94px;border-radius:11px;border:1px solid #c7dcec;padding:13px 14px;font-size:13px;color:#123961;resize:vertical;outline:none}
+.event-form textarea:focus{border-color:#0878d8;box-shadow:0 0 0 3px #d1edff}
+.event-form .primary{font-size:13px}
+.event-cancel{margin-top:10px;width:100%}
+.event-form .field{margin-bottom:15px}
+.day-grid .day.has-events:after{content:"";height:6px;width:6px;position:absolute;bottom:4px;border-radius:50%;background:#ffb900}
+.day-grid .day.selected.has-events:after{background:#fff1a0}
+.day-grid .calendar-blank{display:block;min-height:30px}
+.extra-events{display:grid;gap:15px;margin-top:15px}
+.extra-events:empty{display:none}
+.extra-event-card{border-radius:20px;border:1px solid #d4e9f8;background:#fff;box-shadow:var(--shadow);padding:21px}
+.extra-event-date{display:flex;gap:11px;align-items:center;color:#0861a8;font-size:12px;font-weight:900;margin-bottom:13px}
+.extra-event-header{display:flex;align-items:start;justify-content:space-between;gap:12px}
+.extra-event-header h2{font-size:22px;color:#0b2c56;margin:0;letter-spacing:-.4px}
+.extra-event-description{font-size:13px;line-height:1.6;color:#59748a;margin:9px 0 16px;overflow-wrap:anywhere}
+.extra-event-info{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.extra-event-info>div{background:#f3f9ff;border-radius:11px;padding:11px;color:#315d82;font-size:12px;line-height:1.5}
+.extra-event-info small{font-size:10px;color:#7792aa;display:block}
+.extra-event-info strong{font-size:12px;color:#173f6a;display:block;overflow-wrap:anywhere}
+.extra-event-card .btn-stack{margin-top:16px}
+.event-slots{font-size:11px;color:#0b699b;margin-top:12px;font-weight:800}
+.calendar-card .day{position:relative}
+@media(max-width:1020px){.events-grid{grid-template-columns:1fr}.admin-events-heading{align-items:start;flex-direction:column}}
+@media(max-width:520px){.admin-event-row{grid-template-columns:55px minmax(0,1fr);gap:10px;padding:12px}.extra-event-info{grid-template-columns:1fr}.extra-event-header h2{font-size:19px}.admin-events-heading h2{font-size:25px}}
