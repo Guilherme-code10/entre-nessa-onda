@@ -20,7 +20,7 @@
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Entre Nessa Onda | Portal de Voluntários">
 <meta name="twitter:image" content="https://guilherme-code10.github.io/entre-nessa-onda/assets/logo-entre-nessa-onda.png">
-<link rel="stylesheet" href="styles.css?v=20261113-perfis-3">
+<link rel="stylesheet" href="styles.css?v=20261113-multiplos-4">
 </head>
 <body>
 <svg aria-hidden="true" style="position:absolute;width:0;height:0;overflow:hidden" xmlns="http://www.w3.org/2000/svg"><defs>
@@ -214,9 +214,18 @@
       <div class="field"><label for="message-event">Evento</label><select id="message-event"></select></div>
     </div>
     <div class="message-composer" aria-label="Compor mensagem de WhatsApp">
-      <div class="field"><label for="message-recipient">Enviar para</label><select id="message-recipient"><option value="">Selecione um voluntário autorizado</option></select></div>
-      <div class="field"><label for="message-preview">Mensagem pronta (você pode editar)</label><textarea id="message-preview" maxlength="1500" rows="5" placeholder="Selecione um voluntário autorizado para gerar a mensagem." aria-describedby="message-privacy"></textarea></div>
+      <div class="message-mode-switch">
+        <label for="message-multi-mode"><input id="message-multi-mode" type="checkbox"><span><strong>Enviar para vários voluntários</strong><small>Prepare mensagens individuais para os selecionados, sem disparos automáticos.</small></span></label>
+      </div>
+      <div class="field" id="single-message-recipient"><label for="message-recipient">Enviar para</label><select id="message-recipient"><option value="">Selecione um voluntário autorizado</option></select></div>
+      <div id="multi-message-recipients" class="multi-message-recipients" hidden aria-label="Seleção de voluntários para mensagens">
+        <div class="multi-recipient-heading"><strong>Selecione os voluntários autorizados</strong><div class="multi-select-actions"><button id="multi-select-all" type="button">Selecionar todos</button><button id="multi-clear-all" type="button">Limpar seleção</button></div></div>
+        <div id="multi-recipient-list" class="multi-recipient-list"></div>
+        <p id="multi-selected-count" class="multi-selected-count" aria-live="polite">0 selecionados</p>
+      </div>
+      <div class="field"><label for="message-preview" id="message-preview-label">Mensagem pronta (você pode editar)</label><textarea id="message-preview" maxlength="1500" rows="5" placeholder="Selecione um voluntário autorizado para gerar a mensagem." aria-describedby="message-privacy"></textarea></div>
       <div class="message-send-row"><a id="send-whatsapp" class="message-send disabled" href="#" target="_blank" rel="noopener noreferrer" aria-disabled="true">💬 Abrir WhatsApp para enviar</a><span id="message-send-hint" role="status" aria-live="polite">Cadastre um voluntário com celular e autorização para começar.</span></div>
+      <div id="batch-whatsapp-list" class="batch-whatsapp-list" hidden><div class="batch-heading"><strong>Conversas preparadas</strong><span>Abra uma por vez e confirme o envio no WhatsApp.</span></div><div id="batch-whatsapp-rows" class="batch-whatsapp-rows" aria-live="polite"></div></div>
     </div>
     <p class="message-disclaimer" id="message-privacy">Ao clicar em <strong>Abrir WhatsApp</strong>, a conversa será aberta com o texto preparado. <strong>O envio depende de você confirmar no WhatsApp.</strong> Este site não envia mensagens automaticamente.</p>
     <p class="message-help">Para testar o painel, clique em <strong>+ Novo cadastro</strong>, use dados fictícios e marque a autorização para contato. Para testar a abertura de uma conversa, utilize apenas seu próprio número ou o de alguém que tenha consentido. O sistema não realiza disparos.</p>
@@ -233,5 +242,5 @@
   <div class="notice"><svg class="icon" aria-hidden="true"><use href="#i-info"/></svg><span><strong>Importante:</strong> confirmar disponibilidade não registra presença. O comparecimento será anotado pelo líder durante a ação.</span></div>
  </div><div class="next-actions"><button class="primary" id="btn-back-calendar" type="button">Voltar ao calendário <svg class="tiny-icon" aria-hidden="true"><use href="#i-arrow"/></svg></button><button class="secondary" id="btn-view-scales" type="button">Ver minhas escalas</button></div><p class="muted-foot">Protótipo demonstrativo: o resultado não é gravado em banco de dados.</p></main>
 </section>
-<script type="module" src="app.js?v=20261113-perfis-3"></script>
+<script type="module" src="app.js?v=20261113-multiplos-4"></script>
 </body></html>

@@ -333,3 +333,40 @@ html{background:#eaf4fc;color:var(--dark)}body{margin:0;padding:0!important;back
 .message-send-row span{flex:1;color:#637d93;font-size:11px;line-height:1.5;min-width:150px}
 .volunteer-row .prepare-message{background:#eef7ff;border-color:#bedef6;color:#075998}
 @media(max-width:520px){.access-role-tabs{gap:6px}.access-role{font-size:11px;padding:7px;min-height:44px}.access-role svg{width:15px}.admin-navigation{gap:6px}.admin-navigation button{font-size:11px;min-height:40px;padding:8px 9px}.message-composer{padding:13px}.message-send{width:100%;text-align:center}.message-send-row span{min-width:0}}
+
+/* Preparacao de convites para varios voluntarios (um envio manual por conversa) */
+.message-mode-switch{padding:13px 15px;border:1px solid #c5e0f3;border-radius:12px;background:#edf8ff}
+.message-mode-switch label{display:flex;gap:11px;align-items:flex-start;cursor:pointer}
+.message-mode-switch input{width:19px;height:19px;accent-color:#0966b4;flex-shrink:0;margin-top:1px}
+.message-mode-switch strong{display:block;color:#125084;font-size:13px;line-height:1.4}
+.message-mode-switch small{display:block;margin-top:4px;color:#597893;font-size:11px;line-height:1.5}
+.multi-message-recipients{border:1px solid #d8e9f6;border-radius:12px;padding:16px;background:#f7fbff}
+.multi-recipient-heading{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:13px}
+.multi-recipient-heading strong{font-size:12px;color:#174875}
+.multi-select-actions{display:flex;flex-wrap:wrap;gap:7px}
+.multi-select-actions button{border:1px solid #bad9ef;background:#fff;color:#1165a2;border-radius:9px;padding:8px 11px;font-family:inherit;font-weight:800;font-size:11px;cursor:pointer}
+.multi-select-actions button:hover{background:#e6f4ff}
+.multi-recipient-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;max-height:270px;overflow-y:auto}
+.multi-recipient-option{display:flex;align-items:center;gap:10px;padding:11px;border:1px solid #d4e7f6;border-radius:10px;background:#fff;cursor:pointer;min-width:0}
+.multi-recipient-option:has(input:checked){border-color:#4aa6df;background:#eaf7ff}
+.multi-recipient-option input{width:17px;height:17px;accent-color:#076fb4;flex-shrink:0}
+.multi-recipient-option span{display:grid;gap:2px;min-width:0}
+.multi-recipient-option strong{font-size:12px;color:#134876;overflow-wrap:anywhere}
+.multi-recipient-option small{font-size:10px;color:#63839e}
+.multi-recipient-empty{grid-column:1/-1;color:#5c7894;font-size:12px;line-height:1.5;padding:12px}
+.multi-selected-count{margin:11px 0 0;font-size:12px;font-weight:800;color:#0a629f}
+.batch-whatsapp-list{border-top:1px solid #d7eaf6;margin-top:4px;padding-top:15px}
+.batch-heading{display:grid;gap:3px;margin-bottom:12px}
+.batch-heading strong{font-size:13px;color:#124a7c}
+.batch-heading span{font-size:11px;color:#65809a}
+.batch-whatsapp-rows{display:grid;gap:9px}
+.batch-person-row{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:12px;padding:11px 13px;background:#f3f9ff;border:1px solid #d5e7f5;border-radius:11px}
+.batch-person-info{display:grid;gap:4px;min-width:0}
+.batch-person-info strong{font-size:12px;color:#104878;overflow-wrap:anywhere}
+.batch-person-info small{font-size:10px;color:#6c869d}
+.batch-person-actions{display:flex;gap:9px;align-items:center;flex-wrap:wrap;justify-content:flex-end}
+.batch-person-actions a{border-radius:9px;background:#e0f7ea;border:1px solid #addbc1;color:#117245;font-size:11px;font-weight:900;padding:9px 12px;text-decoration:none;white-space:nowrap}
+.batch-person-actions a:hover{background:#cbefd9}
+.batch-person-opened{font-size:10px;color:#447994}
+#multi-message-recipients[hidden],#batch-whatsapp-list[hidden],#single-message-recipient[hidden],#send-whatsapp[hidden]{display:none!important}
+@media(max-width:690px){.multi-recipient-list{grid-template-columns:1fr}.batch-person-row{grid-template-columns:1fr}.batch-person-actions{justify-content:flex-start}}

@@ -328,4 +328,74 @@ describe('Integracao - Entre Nessa Onda', () => {
     expect(el('message-preview').disabled).toBe(true);
   });
 
+  it('seleciona varios voluntarios autorizados e personaliza cada conversa', () => {
+    const cadastrar = (nome, email, telefone, autorizado) => {
+      el('go-register').click();
+      el('reg-name').value = nome;
+      el('reg-email').value = email;
+      el('reg-phone').value = telefone;
+      el('reg-area').value = 'Recreação';
+      el('reg-consent').checked = true;
+      el('reg-whatsapp-consent').checked = autorizado;
+      el('volunteer-form').dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
+      expect(el('register-feedback').textContent).toContain('Cadastro de TESTE salvo');
+      el('register-back').click();
+    };
+    cadastrar('Maria Teste', 'maria@exemplo.org', '11999999999', true);
+    cadastrar('João Teste', 'joao@exemplo.org', '11988888888', true);
+    cadastrar('Sem Permissão', 'sem@exemplo.org', '11977777777', false);
+    entrarAdmin();
+
+    el('message-multi-mode').checked = true;
+    el('message-multi-mode').dispatchEvent(new Event('change'));
+    expect(el('multi-message-recipients').hidden).toBe(false);
+    expect(el('single-message-recipient').hidden).toBe(true);
+    expect(el('message-preview').value).toContain('{nome}');
+    expect(el('multi-recipient-list').querySelectorAll('input[type="checkbox"]').length).toBe(2);
+
+    el('multi-select-all').click();
+    expect(el('multi-selected-count').textContent).toContain('2 voluntários');
+    const links = [...el('batch-whatsapp-rows').querySelectorAll('a')];
+    expect(links.length).toBe(2);
+    expect(links[0].href).toContain('wa.me/5511999999999');
+    expect(links[1].href).toContain('wa.me/5511988888888');
+    expect(decodeURIComponent(links[0].href)).toContain('Olá, Maria!');
+    expect(decodeURIComponent(links[1].href)).toContain('Olá, João!');
+    expect(links[0].target).toBe('_blank');
+    expect(el('send-whatsapp').hidden).toBe(true);
+
+    el('message-preview').value = 'Olá, {nome}! Precisamos de voluntários no sábado.';
+    el('message-preview').dispatchEvent(new Event('input'));
+    const updated = [...el('batch-whatsapp-rows').querySelectorAll('a')];
+    expect(decodeURIComponent(updated[0].href)).toContain('Olá, Maria! Precisamos');
+    expect(decodeURIComponent(updated[1].href)).toContain('Olá, João! Precisamos');
+    expect(decodeURIComponent(updated[0].href)).not.toContain('{nome}');
+
+    el('multi-clear-all').click();
+    expect(el('batch-whatsapp-rows').querySelectorAll('a').length).toBe(0);
+    expect(el('multi-selected-count').textContent).toContain('0 voluntários');
+  });
+
+  it('remove contatos da selecao multipla quando a autorizacao e revogada', () => {
+    el('go-register').click();
+    el('reg-name').value = 'Maria Teste';
+    el('reg-email').value = 'maria@exemplo.org';
+    el('reg-phone').value = '11999999999';
+    el('reg-area').value = 'Acolhimento';
+    el('reg-consent').checked = true;
+    el('reg-whatsapp-consent').checked = true;
+    el('volunteer-form').dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
+    el('register-back').click();
+    entrarAdmin();
+    el('message-multi-mode').checked = true;
+    el('message-multi-mode').dispatchEvent(new Event('change'));
+    el('multi-select-all').click();
+    expect(el('batch-whatsapp-rows').querySelectorAll('a').length).toBe(1);
+
+    const revoke = [...el('volunteer-list').querySelectorAll('button')].find(b => b.textContent === 'Revogar autorização');
+    revoke.click();
+    expect(el('multi-recipient-list').querySelectorAll('input[type="checkbox"]').length).toBe(0);
+    expect(el('batch-whatsapp-rows').querySelectorAll('a').length).toBe(0);
+  });
+
 });
