@@ -35,6 +35,8 @@ import { validarLogin, obterStatusDisponibilidade } from './regras.js';
   events = events.filter(event => event && typeof event.id === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(event.date || '') && typeof event.title === 'string');
   if (!responses || typeof responses !== 'object' || Array.isArray(responses)) responses = {};
   let status = 'pendente';
+  let loginRole = 'volunteer';
+  let currentRole = null;
   let viewYear = 2026, viewMonth = 10, selectedDate = '2026-11-14';
 
   function readStore(key, fallback) {
@@ -52,6 +54,10 @@ import { validarLogin, obterStatusDisponibilidade } from './regras.js';
   }
 
   function go(screen) {
+    if (screen === 'admin' && currentRole !== 'admin') {
+      setLoginRole('admin');
+      screen = 'login';
+    }
     screens.forEach(x => el('screen-' + x).classList.toggle('active', x === screen));
     try { history.replaceState(null, '', '?tela=' + screen); } catch (_) {}
     if (typeof scrollTo === 'function') scrollTo(0, 0);
@@ -352,7 +358,12 @@ import { validarLogin, obterStatusDisponibilidade } from './regras.js';
       select.append(option);
     });
     if (sorted.some(x=>x.id===old)) select.value=old;
-    el('message-event').disabled=el('message-kind').value==='general';
+    if(!sorted.length){
+      const placeholder=create('option','','Nenhum evento cadastrado');
+      placeholder.value='';
+      select.append(placeholder);
+    }
+    el('message-event').disabled=el('message-kind').value==='general' || !sorted.length;
   }
 
   function volunteerMessage(person) {
@@ -369,6 +380,51 @@ import { validarLogin, obterStatusDisponibilidade } from './regras.js';
       return 'Olá, '+firstName+'! 💙 Passando para lembrar da ação "'+event.title+'", que acontece '+when+', em '+event.place+'. Confirme sua disponibilidade com nossa equipe! 🌊 Projeto Entre Nessa Onda.';
     }
     return 'Olá, '+firstName+'! 💙 Aqui é a equipe do Projeto Entre Nessa Onda. Gostaríamos de convidar você para a ação "'+event.title+'", que acontece '+when+', em '+event.place+'. Você gostaria de participar? 🌊';
+  }
+
+  function renderMessageRecipients() {
+    const select=el('message-recipient');
+    const previous=select.value;
+    select.replaceChildren();
+    const placeholder=create('option','', 'Selecione um voluntário autorizado');
+    placeholder.value='';
+    select.append(placeholder);
+    people.filter(p=>p.whatsappConsent===true && whatsappPhone(p.phone)).forEach(person=>{
+      const option=create('option','',person.name+' • '+person.phone);
+      option.value=person.id;
+      select.append(option);
+    });
+    select.value=people.some(p=>p.id===previous && p.whatsappConsent===true && whatsappPhone(p.phone))?previous:'';
+    refreshMessageComposer();
+  }
+
+  function refreshMessageComposer() {
+    const person=people.find(p=>p.id===el('message-recipient').value
+      && p.whatsappConsent===true && whatsappPhone(p.phone));
+    const preview=el('message-preview');
+    preview.value=person?(volunteerMessage(person)||''):'';
+    preview.disabled=!person;
+    preview.placeholder=person
+      ? 'Cadastre um evento ou escolha "Mensagem geral" para criar o texto.'
+      : 'Selecione um voluntário autorizado para gerar a mensagem.';
+    updateMessageLink();
+  }
+
+  function updateMessageLink() {
+    const button=el('send-whatsapp');
+    const hint=el('message-send-hint');
+    const person=people.find(p=>p.id===el('message-recipient').value && p.whatsappConsent===true);
+    const phone=person?whatsappPhone(person.phone):null;
+    const message=el('message-preview').value.trim();
+    const ready=Boolean(phone && message);
+    button.setAttribute('aria-disabled',String(!ready));
+    button.classList.toggle('disabled',!ready);
+    button.href=ready?'https://wa.me/'+phone+'?text='+encodeURIComponent(message):'#';
+    hint.textContent=!person
+      ? 'Selecione um voluntário que tenha autorizado mensagens pelo WhatsApp.'
+      : !message
+        ? 'Escolha um evento válido ou selecione Mensagem geral.'
+        : 'Conversa pronta para abrir. Confira o texto e envie no WhatsApp.';
   }
 
   function renderPeople() {
@@ -396,6 +452,15 @@ import { validarLogin, obterStatusDisponibilidade } from './regras.js';
         link.rel='noopener noreferrer';
         link.setAttribute('aria-label','Abrir WhatsApp para '+person.name+' com mensagem pronta, sem enviar automaticamente');
         actions.append(link);
+        const choose=create('button','prepare-message','Preparar mensagem');
+        choose.type='button';
+        choose.addEventListener('click',()=>{
+          el('message-recipient').value=person.id;
+          refreshMessageComposer();
+          el('admin-messages').scrollIntoView?.({behavior:'smooth',block:'start'});
+          el('message-preview').focus();
+        });
+        actions.append(choose);
       } else {
         actions.append(create('span','whatsapp-disabled',consent&&phone?'Cadastre um evento':'WhatsApp indisponível'));
       }
@@ -506,14 +571,53 @@ import { validarLogin, obterStatusDisponibilidade } from './regras.js';
     renderAdminEvents();
     renderMessageOptions();
     renderPeople();
+    renderMessageRecipients();
   }
+
+  function setLoginRole(role) {
+    loginRole = role === 'admin' ? 'admin' : 'volunteer';
+    const admin = loginRole === 'admin';
+    el('role-admin').classList.toggle('active',admin);
+    el('role-volunteer').classList.toggle('active',!admin);
+    el('role-admin').setAttribute('aria-pressed',String(admin));
+    el('role-volunteer').setAttribute('aria-pressed',String(!admin));
+    el('admin-demo-credentials').hidden=!admin;
+    el('login-submit-label').textContent=admin?'Acessar administração':'Entrar e ver minhas escalas';
+    el('login-help').textContent=admin
+      ? 'Login de demonstração: use as credenciais de teste abaixo. Não há autenticação de servidor.'
+      : 'Voluntário (demonstração): informe um e-mail válido e uma senha fictícia. Não use senhas reais.';
+    el('login-error').classList.remove('show');
+    el('email').value='';
+    el('password').value='';
+    el('email').placeholder=admin?'admin@entrenessaonda.demo':'Coloque seu e-mail aqui';
+  }
+
+  function logout() {
+    currentRole=null;
+    setLoginRole('volunteer');
+    go('login');
+  }
+
+  el('role-volunteer').addEventListener('click',()=>setLoginRole('volunteer'));
+  el('role-admin').addEventListener('click',()=>setLoginRole('admin'));
 
   el('login-form').addEventListener('submit', event => {
     event.preventDefault();
-    const valid = validarLogin(el('email').checkValidity(), el('password').value);
+    const email=el('email');
+    const password=el('password');
+    if (loginRole==='admin') {
+      const valid=email.value.trim().toLowerCase()==='admin@entrenessaonda.demo' && password.value==='Onda2026!';
+      el('login-error').classList.toggle('show',!valid);
+      el('login-error').textContent=valid?'':'Credenciais de demonstração inválidas. Utilize as informações exibidas abaixo.';
+      if(valid){currentRole='admin';go('admin');}
+      else email.focus();
+      return;
+    }
+    const valid = validarLogin(email.checkValidity(), password.value);
     el('login-error').classList.toggle('show', !valid);
-    if (valid) view('calendar');
-    else (el('email').checkValidity() ? el('password') : el('email')).focus();
+    el('login-error').textContent='Informe um e-mail válido e preencha a senha para continuar.';
+    if (valid){currentRole='volunteer';view('calendar');}
+    else (email.checkValidity()?password:email).focus();
   });
 
   el('toggle-password').addEventListener('click', () => {
@@ -530,12 +634,17 @@ import { validarLogin, obterStatusDisponibilidade } from './regras.js';
     el(id).addEventListener('click', () => view('participations')));
   ['tab-calendar', 'side-calendar', 'nav-calendar', 'participations-back'].forEach(id =>
     el(id).addEventListener('click', () => view('calendar')));
-  ['nav-exit', 'side-logout', 'register-back', 'admin-back'].forEach(id =>
-    el(id).addEventListener('click', () => go('login')));
+  ['nav-exit', 'side-logout', 'admin-back'].forEach(id =>
+    el(id).addEventListener('click', logout));
+  el('register-back').addEventListener('click',()=>go(currentRole==='admin'?'admin':'login'));
   ['go-register', 'side-register', 'admin-new-volunteer'].forEach(id =>
     el(id).addEventListener('click', () => go('cadastro')));
   ['go-admin', 'side-admin'].forEach(id =>
-    el(id).addEventListener('click', () => go('admin')));
+    el(id).addEventListener('click', () => {
+      if(currentRole==='admin'){go('admin');return;}
+      setLoginRole('admin');
+      go('login');
+    }));
   el('prev-month').addEventListener('click',()=>navigateMonth(-1));
   el('next-month').addEventListener('click',()=>navigateMonth(1));
   el('back-to-event').addEventListener('click',()=>{
@@ -546,6 +655,16 @@ import { validarLogin, obterStatusDisponibilidade } from './regras.js';
   ['message-kind','message-event'].forEach(id => el(id).addEventListener('change',()=>{
     el('message-event').disabled=el('message-kind').value==='general';
     renderPeople();
+    refreshMessageComposer();
+  }));
+  el('message-recipient').addEventListener('change',()=>refreshMessageComposer());
+  el('message-preview').addEventListener('input',updateMessageLink);
+  el('send-whatsapp').addEventListener('click',event=>{
+    if(el('send-whatsapp').getAttribute('aria-disabled')==='true') event.preventDefault();
+  });
+  document.querySelectorAll('[data-admin-target]').forEach(button=>button.addEventListener('click',()=>{
+    const target=el(button.dataset.adminTarget);
+    if(target)target.scrollIntoView?.({behavior:'smooth',block:'start'});
   }));
 
   el('volunteer-form').addEventListener('submit', event => {
@@ -670,5 +789,6 @@ import { validarLogin, obterStatusDisponibilidade } from './regras.js';
   renderDay();
   renderParticipations();
   const entry = params.get('tela');
+  if(entry==='admin') setLoginRole('admin');
   go(screens.includes(entry) ? entry : 'login');
 })();

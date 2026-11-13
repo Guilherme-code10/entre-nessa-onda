@@ -20,7 +20,7 @@
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Entre Nessa Onda | Portal de Voluntários">
 <meta name="twitter:image" content="https://guilherme-code10.github.io/entre-nessa-onda/assets/logo-entre-nessa-onda.png">
-<link rel="stylesheet" href="styles.css?v=20261113-contato-2">
+<link rel="stylesheet" href="styles.css?v=20261113-perfis-3">
 </head>
 <body>
 <svg aria-hidden="true" style="position:absolute;width:0;height:0;overflow:hidden" xmlns="http://www.w3.org/2000/svg"><defs>
@@ -42,15 +42,17 @@
   <div class="eyebrow">💛 Acolher, incluir e transformar</div><h1 class="header-title">Quem faz o bem merece uma organização à altura.</h1><p class="header-subtitle">Um portal de escalas e participações inspirado no Projeto Entre Nessa Onda.</p>
  </header>
  <main class="content">
-  <div class="section-kicker">Acesso à plataforma</div><h2 class="section-title">Entre na sua conta</h2>
+  <div class="section-kicker">Acesso à plataforma</div><h2 class="section-title">Bem-vindo ao portal</h2>
+  <div class="access-role-tabs" aria-label="Escolha o tipo de acesso"><button class="access-role active" id="role-volunteer" type="button" aria-pressed="true"><svg class="tiny-icon" aria-hidden="true"><use href="#i-users"/></svg> Sou voluntário</button><button class="access-role" id="role-admin" type="button" aria-pressed="false"><svg class="tiny-icon" aria-hidden="true"><use href="#i-lock"/></svg> Sou administrador</button></div>
   <form class="panel" id="login-form" novalidate autocomplete="off">
    <div class="field"><label for="email">E-mail</label><div class="input-wrap"><svg class="input-icon" aria-hidden="true"><use href="#i-mail"/></svg><input id="email" type="email" autocomplete="off" placeholder="Coloque seu e-mail aqui" aria-describedby="login-help" required/></div></div>
    <div class="field"><label for="password">Senha</label><div class="input-wrap"><svg class="input-icon" aria-hidden="true"><use href="#i-lock"/></svg><input id="password" type="password" autocomplete="new-password" placeholder="Digite sua senha" required/><button class="eye-button" id="toggle-password" type="button" aria-label="Mostrar senha">Mostrar</button></div></div>
-   <button class="primary" type="submit">Entrar e ver minhas escalas <svg class="tiny-icon" aria-hidden="true"><use href="#i-arrow"/></svg></button>
+   <button class="primary" type="submit"><span id="login-submit-label">Entrar e ver minhas escalas</span><svg class="tiny-icon" aria-hidden="true"><use href="#i-arrow"/></svg></button>
    <div class="error-msg" id="login-error" role="alert">Informe um e-mail válido e preencha a senha para continuar.</div>
-   <p id="login-help" class="muted-foot">Acesso demonstrativo: informe um e-mail válido e qualquer senha de teste. Não use sua senha pessoal.</p>
+   <p id="login-help" class="muted-foot">Voluntário (demonstração): informe um e-mail válido e uma senha fictícia. Não use senhas reais.</p>
+   <div id="admin-demo-credentials" class="admin-demo-credentials" hidden><span class="admin-credentials-tag">ACESSO ADMINISTRATIVO DE TESTE</span><span>E-mail: <strong>admin@entrenessaonda.demo</strong></span><span>Senha: <strong>Onda2026!</strong></span><small>Essas credenciais são públicas e servem apenas para apresentar o protótipo.</small></div>
   </form>
-  <div class="entry-actions"><button type="button" id="go-register" class="entry-link"><svg class="tiny-icon" aria-hidden="true"><use href="#i-users"/></svg> Quero me cadastrar como voluntário</button><button type="button" id="go-admin" class="entry-link"><svg class="tiny-icon" aria-hidden="true"><use href="#i-info"/></svg> Ver painel administrativo (demonstração)</button></div>
+  <div class="entry-actions"><button type="button" id="go-register" class="entry-link"><svg class="tiny-icon" aria-hidden="true"><use href="#i-users"/></svg> Quero me cadastrar como voluntário</button><button type="button" id="go-admin" class="entry-link"><svg class="tiny-icon" aria-hidden="true"><use href="#i-lock"/></svg> Acessar painel da coordenação</button></div>
   <div class="privacy"><svg class="icon" aria-hidden="true"><use href="#i-lock"/></svg><p><strong>Seus dados, com cuidado.</strong><br/>Nesta demonstração, não há autenticação de verdade. Não use dados pessoais reais.</p></div>
  </main>
  <footer class="bottom-note">Protótipo acadêmico • dados fictícios • sem login real</footer>
@@ -64,7 +66,7 @@
       <button class="side-link active" id="side-calendar" type="button"><svg class="icon" aria-hidden="true"><use href="#i-calendar"/></svg><span>Minhas escalas</span></button>
       <button class="side-link" id="side-participations" type="button"><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg><span>Minhas participações</span></button>
       <a class="side-link" href="https://www.instagram.com/projetoentrenessaonda/" target="_blank" rel="noopener noreferrer"><svg class="icon" aria-hidden="true"><use href="#i-users"/></svg><span>Conheça o projeto</span><span class="external-indicator" aria-hidden="true">↗</span></a>
-      <button class="side-link" id="side-register" type="button"><svg class="icon" aria-hidden="true"><use href="#i-users"/></svg><span>Cadastro</span></button><button class="side-link" id="side-admin" type="button"><svg class="icon" aria-hidden="true"><use href="#i-info"/></svg><span>Admin / Estoque</span></button><button class="side-link side-exit" id="side-logout" type="button"><svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg><span>Sair da demonstração</span></button>
+      <button class="side-link" id="side-register" type="button"><svg class="icon" aria-hidden="true"><use href="#i-users"/></svg><span>Cadastro</span></button><button class="side-link" id="side-admin" type="button"><svg class="icon" aria-hidden="true"><use href="#i-lock"/></svg><span>Área da coordenação</span></button><button class="side-link side-exit" id="side-logout" type="button"><svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg><span>Sair da demonstração</span></button>
     </nav>
     <div class="sidebar-spacer"></div>
     <div class="sidebar-wave" aria-hidden="true"><span></span><span></span></div>
@@ -144,10 +146,11 @@
 
 
 <section id="screen-admin" class="screen admin-screen" aria-label="Painel administrativo demonstrativo">
- <header class="inner-topbar admin-topbar"><div class="inner-heading"><span class="inner-kicker">PROJETO ENTRE NESSA ONDA • GESTÃO</span><h1>Painel administrativo</h1><p>Eventos, escalas, voluntários e materiais em uma única visão.</p></div><button class="back-to-home" id="admin-back" type="button">← Voltar ao início</button></header>
+ <header class="inner-topbar admin-topbar"><div class="inner-heading"><span class="inner-kicker">PROJETO ENTRE NESSA ONDA • GESTÃO</span><h1>Painel administrativo</h1><p>Eventos, escalas, voluntários e materiais em uma única visão.</p></div><button class="back-to-home" id="admin-back" type="button">Sair da administração</button></header>
  <main class="admin-main">
-  <p class="demo-warning"><svg class="tiny-icon" aria-hidden="true"><use href="#i-info"/></svg><span><strong>Área administrativa de demonstração — sem proteção por senha.</strong> Os materiais são fictícios, e os cadastros são locais deste navegador. Não utilize dados reais ou informações confidenciais.</span></p>
-  <div class="admin-intro"><div><span class="section-kicker">CONTROLE DE MATERIAIS</span><h2>Visão geral</h2><p>Organize ações comunitárias, materiais e o cadastro de voluntários.</p></div><button class="admin-reset" id="reset-demo-stock" type="button">Restaurar estoque de exemplo</button></div>
+  <p class="demo-warning"><svg class="tiny-icon" aria-hidden="true"><use href="#i-info"/></svg><span><strong>Administração demonstrativa.</strong> O login desta versão é apenas visual e não substitui autenticação segura no servidor. Não utilize dados pessoais reais ou confidenciais.</span></p>
+  <nav class="admin-navigation" aria-label="Seções do painel administrativo"><button type="button" data-admin-target="admin-events">📅 Eventos</button><button type="button" data-admin-target="admin-messages">💬 Mensagens</button><button type="button" data-admin-target="admin-inventory">📦 Estoque</button><button type="button" data-admin-target="volunteer-admin">👥 Voluntários</button></nav>
+  <div class="admin-intro"><div><span class="section-kicker">PAINEL DE GESTÃO</span><h2>Visão geral</h2><p>Organize ações comunitárias, materiais e o cadastro de voluntários.</p></div><button class="admin-reset" id="reset-demo-stock" type="button">Restaurar estoque de exemplo</button></div>
   <div class="stats-grid">
    <div class="stat-card"><span>Itens cadastrados</span><strong id="stat-products">0</strong><small>tipos de materiais</small></div>
    <div class="stat-card"><span>Unidades disponíveis</span><strong id="stat-units">0</strong><small>somadas em estoque</small></div>
@@ -191,7 +194,7 @@
       </section>
     </div>
   </section>
-  <div class="admin-grid">
+  <div class="admin-grid" id="admin-inventory">
    <section class="admin-panel" aria-label="Lista de materiais"><div class="admin-panel-heading"><div><h3>Estoque de materiais</h3><p>Utilize + e − para simular a entrada e saída de unidades.</p></div><span class="admin-panel-chip">EXEMPLO</span></div><div id="inventory-list" class="inventory-list" aria-live="polite"></div></section>
    <section class="admin-panel admin-form-panel" aria-label="Cadastrar materiais"><div class="admin-panel-heading"><div><h3>Novo material</h3><p>Inclua um item no estoque demonstrativo.</p></div></div>
     <form id="stock-form" class="beautiful-form" autocomplete="off">
@@ -203,14 +206,20 @@
     </form>
    </section>
   </div>
-  <section class="admin-panel volunteer-admin" aria-label="Cadastros e mensagens para voluntários"><div class="admin-panel-heading"><div><h3>Voluntários e contato por WhatsApp</h3><p>Contatos de teste salvos neste navegador. O envio de mensagens exige autorização e confirmação manual no WhatsApp.</p></div><div class="volunteer-actions"><button id="admin-new-volunteer" class="admin-mini-btn" type="button">+ Novo cadastro</button><button id="clear-demo-people" class="admin-mini-btn danger" type="button">Apagar cadastros locais</button></div></div><div class="volunteer-message-panel" aria-label="Preparar mensagem individual">
+  <div class="admin-message-heading" id="admin-messages"><span class="section-kicker">CONTATO COM A EQUIPE</span><h2>Central de mensagens</h2><p>Selecione um voluntário autorizado, revise o texto e abra o WhatsApp para enviar manualmente.</p></div>
+  <section class="admin-panel volunteer-admin" id="volunteer-admin" aria-label="Cadastros e mensagens para voluntários"><div class="admin-panel-heading"><div><h3>Voluntários e contato por WhatsApp</h3><p>Os contatos são demonstrativos e ficam apenas neste navegador. Escolha o destinatário na Central de mensagens abaixo.</p></div><div class="volunteer-actions"><button id="admin-new-volunteer" class="admin-mini-btn" type="button">+ Novo cadastro</button><button id="clear-demo-people" class="admin-mini-btn danger" type="button">Apagar cadastros locais</button></div></div><div class="volunteer-message-panel" aria-label="Preparar mensagem individual">
     <div class="message-panel-heading"><span class="message-panel-icon" aria-hidden="true">💬</span><div><strong>Preparar mensagem</strong><p>Escolha o tipo de aviso e, se necessário, o evento. Depois use o WhatsApp na ficha do voluntário.</p></div></div>
     <div class="message-filters">
       <div class="field"><label for="message-kind">Tipo de mensagem</label><select id="message-kind"><option value="invite">Convite para evento</option><option value="reminder">Lembrete de evento</option><option value="general">Mensagem geral</option></select></div>
       <div class="field"><label for="message-event">Evento</label><select id="message-event"></select></div>
     </div>
-    <p class="message-disclaimer">O botão apenas abre o WhatsApp com uma mensagem sugerida. <strong>Você revisa e envia manualmente.</strong> Cadastros sem autorização não poderão receber mensagens pelo botão.</p>
-    <p class="message-help">Para testar: clique em <strong>+ Novo cadastro</strong>, preencha um celular fictício com DDD e marque <strong>Autorizo receber mensagens pelo WhatsApp</strong>. Cadastros antigos sem esses dados precisam ser recadastrados. Não use números reais na demonstração.</p>
+    <div class="message-composer" aria-label="Compor mensagem de WhatsApp">
+      <div class="field"><label for="message-recipient">Enviar para</label><select id="message-recipient"><option value="">Selecione um voluntário autorizado</option></select></div>
+      <div class="field"><label for="message-preview">Mensagem pronta (você pode editar)</label><textarea id="message-preview" maxlength="1500" rows="5" placeholder="Selecione um voluntário autorizado para gerar a mensagem." aria-describedby="message-privacy"></textarea></div>
+      <div class="message-send-row"><a id="send-whatsapp" class="message-send disabled" href="#" target="_blank" rel="noopener noreferrer" aria-disabled="true">💬 Abrir WhatsApp para enviar</a><span id="message-send-hint" role="status" aria-live="polite">Cadastre um voluntário com celular e autorização para começar.</span></div>
+    </div>
+    <p class="message-disclaimer" id="message-privacy">Ao clicar em <strong>Abrir WhatsApp</strong>, a conversa será aberta com o texto preparado. <strong>O envio depende de você confirmar no WhatsApp.</strong> Este site não envia mensagens automaticamente.</p>
+    <p class="message-help">Para testar o painel, clique em <strong>+ Novo cadastro</strong>, use dados fictícios e marque a autorização para contato. Para testar a abertura de uma conversa, utilize apenas seu próprio número ou o de alguém que tenha consentido. O sistema não realiza disparos.</p>
   </div>
   <div id="volunteer-list" class="volunteer-list"></div></section>
   <p class="admin-bottom-note">Para compartilhar eventos, escalas, estoque e cadastros entre dispositivos, precisaremos conectar um banco de dados e autenticação administrativa.</p>
@@ -224,5 +233,5 @@
   <div class="notice"><svg class="icon" aria-hidden="true"><use href="#i-info"/></svg><span><strong>Importante:</strong> confirmar disponibilidade não registra presença. O comparecimento será anotado pelo líder durante a ação.</span></div>
  </div><div class="next-actions"><button class="primary" id="btn-back-calendar" type="button">Voltar ao calendário <svg class="tiny-icon" aria-hidden="true"><use href="#i-arrow"/></svg></button><button class="secondary" id="btn-view-scales" type="button">Ver minhas escalas</button></div><p class="muted-foot">Protótipo demonstrativo: o resultado não é gravado em banco de dados.</p></main>
 </section>
-<script type="module" src="app.js?v=20261113-contato-2"></script>
+<script type="module" src="app.js?v=20261113-perfis-3"></script>
 </body></html>

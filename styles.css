@@ -298,3 +298,38 @@ html{background:#eaf4fc;color:var(--dark)}body{margin:0;padding:0!important;back
 .volunteer-row .whatsapp-disabled{display:inline-block;color:#7f94a5;background:#f2f5f9;border:1px solid #dee8ef;border-radius:9px;padding:9px 11px;font-size:11px}
 .volunteer-row button{min-height:36px}
 @media(max-width:700px){.message-filters{grid-template-columns:1fr}.volunteer-row{grid-template-columns:1fr}.volunteer-row-actions{justify-content:flex-start}.volunteer-message-panel{padding:15px}}
+
+/* Portal com perfis separados e central de mensagens de demonstração */
+.access-role-tabs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;margin:0 0 17px}
+.access-role{display:flex;gap:8px;align-items:center;justify-content:center;min-height:48px;border:1.5px solid #cae1f3;border-radius:12px;background:#fff;color:#365e81;font-family:inherit;font-size:13px;font-weight:800;line-height:1.2;cursor:pointer;padding:10px}
+.access-role svg{flex-shrink:0}
+.access-role.active{border-color:#0b68af;background:#e3f4ff;color:#06487e;box-shadow:inset 0 0 0 1px #0b68af}
+.access-role:hover{background:#f0f8ff}
+.access-role:focus-visible{outline:3px solid #ffcb23;outline-offset:2px}
+.admin-demo-credentials{display:grid;gap:5px;border:1px solid #b9dcf5;border-radius:13px;background:linear-gradient(115deg,#f1f9ff,#e8f6ff);padding:14px 16px;color:#254c72;font-size:13px;line-height:1.45;margin-top:14px}
+.admin-demo-credentials[hidden]{display:none}
+.admin-demo-credentials strong{color:#0d4277;font-weight:850;overflow-wrap:anywhere}
+.admin-demo-credentials small{font-size:11px;color:#657e97;line-height:1.5;margin-top:5px}
+.admin-credentials-tag{font-size:10px;font-weight:1000;letter-spacing:1.2px;color:#075b9a}
+.admin-navigation{display:flex;flex-wrap:wrap;gap:10px;background:#fff;border:1px solid #d2e4f3;border-radius:17px;box-shadow:0 6px 16px rgba(5,45,95,.045);padding:12px;margin:3px 0 28px}
+.admin-navigation button{border:1px solid transparent;background:#eff7ff;color:#104979;font-family:inherit;font-size:13px;font-weight:800;line-height:1.3;min-height:42px;padding:8px 15px;border-radius:10px;cursor:pointer}
+.admin-navigation button:hover{border-color:#9bceef;background:#dff2ff}
+.admin-message-heading{margin:37px 0 18px;scroll-margin-top:24px}
+.admin-message-heading h2{font-size:29px;letter-spacing:-.6px;color:#0b2c56;margin:6px 0}
+.admin-message-heading p{margin:0;color:#5e7894;font-size:13px;line-height:1.55}
+#admin-inventory,#volunteer-admin,#admin-events{scroll-margin-top:24px}
+.message-composer{border:1px solid #c4dff4;border-radius:16px;background:#fff;padding:18px;display:grid;gap:13px;margin:18px 0}
+.message-composer .field{margin:0}
+.message-composer .field label{font-size:12px;color:#23547f;display:block;font-weight:900;margin-bottom:8px}
+.message-composer select,.message-composer textarea{width:100%;border:1px solid #bad8ef;border-radius:10px;background:#fff;color:#143d68;font-family:inherit;font-size:13px;padding:12px;outline:none;line-height:1.5}
+.message-composer select{height:48px}
+.message-composer textarea{min-height:127px;resize:vertical}
+.message-composer textarea:disabled{background:#f4f8fc;color:#7e95aa}
+.message-composer select:focus-visible,.message-composer textarea:focus-visible{outline:3px solid #c3e5fa;border-color:#0b78bd}
+.message-send-row{display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.message-send{min-height:48px;border-radius:12px;background:linear-gradient(115deg,#19a35d,#0e8249);color:#fff;display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:12px 19px;text-decoration:none;font-weight:900;font-size:13px;box-shadow:0 8px 16px rgba(15,122,68,.15)}
+.message-send:hover{background:linear-gradient(115deg,#21af6b,#087443)}
+.message-send.disabled,.message-send[aria-disabled="true"]{background:#e6edf3;color:#6e869a;box-shadow:none;cursor:not-allowed}
+.message-send-row span{flex:1;color:#637d93;font-size:11px;line-height:1.5;min-width:150px}
+.volunteer-row .prepare-message{background:#eef7ff;border-color:#bedef6;color:#075998}
+@media(max-width:520px){.access-role-tabs{gap:6px}.access-role{font-size:11px;padding:7px;min-height:44px}.access-role svg{width:15px}.admin-navigation{gap:6px}.admin-navigation button{font-size:11px;min-height:40px;padding:8px 9px}.message-composer{padding:13px}.message-send{width:100%;text-align:center}.message-send-row span{min-width:0}}
