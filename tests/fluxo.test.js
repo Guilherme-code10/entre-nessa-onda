@@ -7,14 +7,14 @@ const html = readFileSync('Prótoipo/index.html', 'utf8');
 
 const el = (id) => document.getElementById(id);
 
-async function iniciarPrototipo() {
+async function iniciarPrototipo({ manterDados = false } = {}) {
   vi.resetModules();
 
   document.body.innerHTML = html.split('<body>')[1].split('</body>')[0];
 
   vi.stubGlobal('scrollTo', vi.fn());
   history.replaceState(null, '', '/');
-  window.localStorage.clear();
+  if (!manterDados) window.localStorage.clear();
 
   await import('../Prótoipo/app.js');
 }
@@ -491,6 +491,92 @@ describe('Integracao - Entre Nessa Onda', () => {
     el('side-logout').click();
     entrarAdmin();
     expect(el('report-confirmed').textContent).toBe('1');
+  });
+
+  it('teste completo: evento novo, escala, confirmacao, presenca, materiais, relatorios e recarga', async () => {
+    // Usar somente dados ficticios: o prototipo nao protege informacoes pessoais.
+    el('go-register').click();
+    el('reg-name').value = 'Teste Fluxo Completo';
+    el('reg-email').value = 'integracao@exemplo.org';
+    el('reg-area').value = 'Recreação';
+    el('reg-consent').checked = true;
+    el('volunteer-form').dispatchEvent(new Event('submit', { bubbles:true, cancelable:true }));
+    expect(el('register-feedback').textContent).toContain('Cadastro de TESTE salvo');
+    el('register-back').click();
+
+    entrarAdmin();
+    el('event-name').value = 'Mutirão Comunitário';
+    el('event-date').value = '2026-12-05';
+    el('event-start').value = '10:00';
+    el('event-end').value = '12:00';
+    el('event-place').value = 'Local de demonstração';
+    el('event-sector').value = 'Recreação';
+    el('event-role').value = 'Apoio na atividade';
+    el('cap-recreation').value = '2';
+    el('event-form').dispatchEvent(new Event('submit', { bubbles:true, cancelable:true }));
+    expect(el('stat-events').textContent).toBe('2');
+
+    const created = JSON.parse(localStorage.getItem('entre_nessa_onda_events_demo_v1'))
+      .find(event => event.title === 'Mutirão Comunitário');
+    expect(created).toBeTruthy();
+    expect(created.slotsBySector['Recreação']).toBe(2);
+
+    el('scale-event').value = created.id;
+    el('scale-event').dispatchEvent(new Event('change'));
+    el('scale-sector').value = 'Recreação';
+    el('scale-form').dispatchEvent(new Event('submit', { bubbles:true, cancelable:true }));
+    expect(el('stat-assigned').textContent).toBe('1');
+    expect(el('assignment-list').textContent).toContain('Teste Fluxo Completo');
+
+    el('admin-back').click();
+    enviarLogin('integracao@exemplo.org', 'senha-ficticia');
+    expect(el('screen-escala').classList.contains('active')).toBe(true);
+    el('next-month').click();
+    expect(el('extra-events').textContent).toContain('Mutirão Comunitário');
+    const confirm = [...el('extra-events').querySelectorAll('button')]
+      .find(b => b.textContent.includes('Confirmar participação'));
+    expect(confirm).toBeTruthy();
+    confirm.click();
+    expect(el('result-status').textContent).toBe('Confirmada');
+
+    el('result-back').click();
+    el('side-logout').click();
+    entrarAdmin();
+    el('scale-event').value = created.id;
+    el('scale-event').dispatchEvent(new Event('change'));
+    expect(el('assignment-list').textContent).toContain('Confirmado');
+
+    const attendance = [...el('assignment-list').querySelectorAll('button')]
+      .find(b => b.textContent === 'Presente');
+    expect(attendance).toBeTruthy();
+    attendance.click();
+    expect(el('report-attended').textContent).toBe('1');
+    expect(el('report-hours').textContent).toBe('2h');
+
+    el('materials-event').value = created.id;
+    el('materials-event').dispatchEvent(new Event('change'));
+    el('materials-qty').value = '3';
+    const initialUnits = Number(el('stat-units').textContent);
+    el('event-material-form').dispatchEvent(new Event('submit',{bubbles:true,cancelable:true}));
+    expect(Number(el('stat-units').textContent)).toBe(initialUnits);
+    const consume = [...el('event-material-list').querySelectorAll('button')]
+      .find(b => b.textContent === 'Registrar uso');
+    expect(consume).toBeTruthy();
+    consume.click();
+    expect(Number(el('stat-units').textContent)).toBe(initialUnits-3);
+    expect(el('report-materials').textContent).toBe('3');
+
+    // Confere persistencia apos reabrir a aplicacao no mesmo navegador.
+    await iniciarPrototipo({ manterDados:true });
+    entrarAdmin();
+    expect(el('stat-volunteers').textContent).toBe('1');
+    expect(el('stat-events').textContent).toBe('2');
+    expect(el('stat-assigned').textContent).toBe('1');
+    expect(el('report-confirmed').textContent).toBe('1');
+    expect(el('report-attended').textContent).toBe('1');
+    expect(el('report-hours').textContent).toBe('2h');
+    expect(el('report-materials').textContent).toBe('3');
+    expect(Number(el('stat-units').textContent)).toBe(initialUnits-3);
   });
 
 });
